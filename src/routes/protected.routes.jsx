@@ -1,12 +1,17 @@
-import { createBrowserRouter } from "react-router-dom";
-import Admin from "../pages/Admin";
-import User from "../pages/User";
+import Admin from "../pages/admin/Admin";
+import DashBoard from "../pages/admin/DashBoard";
+import User from "../pages/user/User";
 
 const protectedRouter = [
   {
     path: "/admin",
     element: <Admin />,
-    children: [],
+    children: [
+      {
+        index: true,
+        element: <DashBoard />,
+      },
+    ],
   },
   {
     path: "/user",

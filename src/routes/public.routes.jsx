@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
-import Home from "../pages/Home";
-import NotFoundPage from "../pages/NotFoundPage";
+import Home from "../pages/user/Home";
+import NotFoundPage from "../pages/user/NotFoundPage";
 
 const publicRouter = [
   {
