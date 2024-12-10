@@ -54,7 +54,7 @@ const items = [
     key: "5",
     icon: <MailOutlined style={{ fontSize: "20px" }} />,
     label: (
-      <Link to={""} className="text-base font-semibold mb-5">
+      <Link to={"/admin/category"} className="text-base font-semibold mb-5">
         Category Management
       </Link>
     ),
