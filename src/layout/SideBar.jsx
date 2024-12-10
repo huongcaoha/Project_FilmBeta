@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { DashboardOutlined, MailOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 const items = [
   {
     key: "1",
@@ -11,7 +11,7 @@ const items = [
   {
     key: "2",
     icon: <MailOutlined />,
-    label: "Product Management",
+    label: <NavLink to={"/admin/product"}>Product Management</NavLink>,
   },
   {
     key: "3",
@@ -26,7 +26,7 @@ const items = [
   {
     key: "5",
     icon: <MailOutlined />,
-    label: <Link to={"/admin/category"}>Category Management</Link>,
+    label: <NavLink to={"/admin/category"}>Category Management</NavLink>,
   },
 ];
 const getLevelKeys = (items1) => {
