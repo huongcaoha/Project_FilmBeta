@@ -15,7 +15,7 @@ export default function CategoryManager() {
   const [isShowModal, setIsShowModal] = useState(false);
   const [categories, setCategories] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState(5);
   const [searchValue, setSearchValue] = useState("");
   const [totalElements, setTotalElements] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,16 +44,35 @@ export default function CategoryManager() {
   };
 
   const handleConfirmDelete = async () => {
-    await deleteCategory(idCate)
+    const response = await deleteCategory(idCate)
       .then(() => {
         message.success("Danh mục đã được xóa thành công.");
         setIsShowModalDelete(false);
         setCurrentPage(0);
       })
       .catch((err) => {
-        message.error("Có lỗi xảy ra khi xóa danh mục.");
+        console.log(err);
+
+        message.error(err.response.data.message.message);
       });
   };
+
+  // const handleConfirmDelete = async () => {
+  //   try {
+  //     const response = await deleteCategory(idCate);
+  //     if (response.status === 200) {
+  //       message.success("Danh mục đã được xóa thành công.");
+  //       setIsShowModalDelete(false);
+  //       setCurrentPage(0);
+  //     } else if (response.status === 401) {
+  //       message.error("Danh mục đã có sản phẩm, không thể xóa.");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+
+  //     message.error("Có lỗi xảy ra khi xóa danh mục.");
+  //   }
+  // };
 
   const handleCancelDelete = () => {
     setIsShowModalDelete(false);
