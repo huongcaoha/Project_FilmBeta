@@ -12,9 +12,7 @@ export default function Admin() {
 
       <div className="flex">
         <SideBar />
-        <div className="p-6 flex-1">
-          <Outlet />
-        </div>
+        <Outlet>Content</Outlet>
       </div>
     </div>
   );
