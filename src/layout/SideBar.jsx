@@ -12,7 +12,7 @@ import {
   YoutubeOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 const items = [
   {
     key: "1",
@@ -27,9 +27,9 @@ const items = [
     key: "2",
     icon: <HomeOutlined style={{ fontSize: "20px" }} />,
     label: (
-      <Link to={""} className="text-base font-semibold mb-5">
+      <NavLink to={"/admin/theaters"} className="text-base font-semibold mb-5">
         Theater Management
-      </Link>
+      </NavLink>
     ),
   },
   {
