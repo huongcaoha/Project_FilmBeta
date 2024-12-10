@@ -36,7 +36,11 @@ const protectedRouter = [
       },
       {
         path: "theaters",
-        element: <AdminTheater />,
+        element: (
+          <LazyLoad>
+            <AdminTheater />
+          </LazyLoad>
+        ),
       },
       {
         path: "category",
