@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import {
-  createCategory,
-  deleteCategory,
-  fetchAllCategory,
-  updateCategory,
-} from "../../services/categoryService";
+// import {
+//   createCategory,
+//   deleteCategory,
+//   fetchAllCategory,
+//   updateCategory,
+// } from "../../services/categoryService";
 import { Button, Form, Input, message, Modal, Pagination, Table } from "antd";
 import { CloseOutlined, ReloadOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../hooks/useDebounce";
+import { use } from "react";
 
 export default function CategoryManager() {
   const [form] = Form.useForm();
