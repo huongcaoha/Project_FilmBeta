@@ -1,4 +1,5 @@
 import Admin from "../pages/admin/Admin";
+import AdminTheater from "../pages/admin/AdminTheater";
 import DashBoard from "../pages/admin/DashBoard";
 import User from "../pages/user/User";
 
@@ -10,6 +11,10 @@ const protectedRouter = [
       {
         index: true,
         element: <DashBoard />,
+      },
+      {
+        path: "theaters",
+        element: <AdminTheater />,
       },
     ],
   },

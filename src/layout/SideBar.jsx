@@ -1,32 +1,108 @@
 import React, { useState } from "react";
-import { DashboardOutlined, MailOutlined } from "@ant-design/icons";
+import {
+  BookOutlined,
+  DashboardOutlined,
+  FieldTimeOutlined,
+  HomeOutlined,
+  InsertRowLeftOutlined,
+  MailOutlined,
+  MessageOutlined,
+  PictureOutlined,
+  UserSwitchOutlined,
+  YoutubeOutlined,
+} from "@ant-design/icons";
 import { Menu } from "antd";
 import { Link } from "react-router-dom";
 const items = [
   {
     key: "1",
-    icon: <DashboardOutlined />,
-    label: "Dashboard",
+    icon: <DashboardOutlined style={{ fontSize: "20px" }} />,
+    label: (
+      <Link to={""} className="text-base font-semibold mb-5">
+        Dashboard
+      </Link>
+    ),
   },
   {
     key: "2",
-    icon: <MailOutlined />,
-    label: "Product Management",
+    icon: <HomeOutlined style={{ fontSize: "20px" }} />,
+    label: (
+      <Link to={""} className="text-base font-semibold mb-5">
+        Theater Management
+      </Link>
+    ),
   },
   {
     key: "3",
-    icon: <MailOutlined />,
-    label: "Order Management",
+    icon: <InsertRowLeftOutlined style={{ fontSize: "20px" }} />,
+    label: (
+      <Link to={""} className="text-base font-semibold mb-5">
+        ScreenRoom Management
+      </Link>
+    ),
   },
   {
     key: "4",
-    icon: <MailOutlined />,
-    label: "User Management",
+    icon: <FieldTimeOutlined style={{ fontSize: "20px" }} />,
+    label: (
+      <Link to={""} className="text-base font-semibold mb-5">
+        ShowTime Management
+      </Link>
+    ),
   },
   {
     key: "5",
-    icon: <MailOutlined />,
-    label: <Link to={"/admin/category"}>Category Management</Link>,
+    icon: <MailOutlined style={{ fontSize: "20px" }} />,
+    label: (
+      <Link to={""} className="text-base font-semibold mb-5">
+        Category Management
+      </Link>
+    ),
+  },
+  {
+    key: "6",
+    icon: <BookOutlined style={{ fontSize: "20px" }} />,
+    label: (
+      <Link to={""} className="text-base font-semibold mb-5">
+        Booking Management
+      </Link>
+    ),
+  },
+  {
+    key: "7",
+    icon: <YoutubeOutlined style={{ fontSize: "20px" }} />,
+    label: (
+      <Link to={""} className="text-base font-semibold mb-5">
+        Movie Management
+      </Link>
+    ),
+  },
+  {
+    key: "8",
+    icon: <MessageOutlined style={{ fontSize: "20px" }} />,
+    label: (
+      <Link to={""} className="text-base font-semibold mb-5">
+        Comment Management
+      </Link>
+    ),
+  },
+  {
+    key: "9",
+    icon: <UserSwitchOutlined style={{ fontSize: "20px" }} />,
+    label: (
+      <Link to={""} className="text-base font-semibold mb-5">
+        User Management
+      </Link>
+    ),
+  },
+  {
+    key: "10",
+    icon: <PictureOutlined style={{ fontSize: "20px" }} />,
+    label: (
+      <Link to={""} className="text-base font-semibold mb-5">
+        Banner Management
+      </Link>
+    ),
   },
 ];
 const getLevelKeys = (items1) => {
