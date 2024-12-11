@@ -43,3 +43,10 @@ export const updateScreenRoom = async (screenRoom, id) => {
   );
   return response.data;
 };
+
+export const getSeatByScreen = async (screenRoomId) => {
+  const response = await baseUrl.get(
+    `/api.myService.com/v1/admin/seats/getAll/${screenRoomId}`
+  );
+  return response.data;
+};

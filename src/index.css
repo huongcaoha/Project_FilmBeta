@@ -1,3 +1,68 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Tổng thể container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9; /* Nền sáng */
+  border-radius: 10px; /* Bo góc cho container */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+}
+
+/* Tiêu đề */
+h1 {
+  margin-bottom: 30px;
+  color: #333; /* Màu tiêu đề tối */
+}
+
+/* Lưới ghế */
+.seat-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(60px, 1fr)
+  ); /* Tự động điều chỉnh cột */
+  gap: 10px; /* Khoảng cách giữa các ghế */
+}
+
+/* Ghế */
+.seat {
+  position: relative;
+  width: 60px; /* Chiều rộng của ghế */
+  height: 60px; /* Chiều cao của ghế */
+  border: 2px solid #007bff; /* Đường viền */
+  border-radius: 5px; /* Bo góc cho ghế */
+  background-color: #ffffff; /* Nền ghế */
+  transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+}
+
+.seat:hover {
+  background-color: #e7f4ff; /* Màu nền khi hover */
+}
+
+/* Checkbox */
+input[type="checkbox"] {
+  position: absolute;
+  opacity: 0; /* Ẩn checkbox mặc định */
+  cursor: pointer; /* Con trỏ chuột */
+}
+
+/* Nhãn ghế */
+label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #007bff; /* Màu chữ */
+  font-weight: bold; /* Chữ đậm */
+}
+
+/* Khi checkbox được chọn */
+input[type="checkbox"]:checked + label {
+  color: #fff; /* Màu chữ khi chọn */
+  background-color: black; /* Màu nền khi chọn */
+  border-radius: 5px; /* Bo góc cho label */
+  padding: 5px 10px; /* Padding cho label */
+}

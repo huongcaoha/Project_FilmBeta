@@ -6,6 +6,7 @@ import User from "../pages/user/User";
 import { Suspense } from "react";
 import CategoryManager from "../pages/admin/CategoryManager";
 import AdminScreenRoom from "../pages/admin/screenRoom/AdminScreenRoom";
+import AdminScreenRoomDetail from "../pages/admin/screenRoom/AdminScreenRoomDetail";
 
 const contentStyle = {
   padding: 50,
@@ -56,6 +57,14 @@ const protectedRouter = [
         element: (
           <LazyLoad>
             <AdminScreenRoom />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "screenRoomDetail",
+        element: (
+          <LazyLoad>
+            <AdminScreenRoomDetail />
           </LazyLoad>
         ),
       },

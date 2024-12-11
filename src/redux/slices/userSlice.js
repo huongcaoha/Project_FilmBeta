@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios"; // Đảm bảo import axios
 
 const initialState = {
-  // Sửa chính tả
   status: "idle",
   data: [],
   error: null,

@@ -9,6 +9,9 @@ import {
 } from "../../../services/screenRoom";
 import { fetchAllTheater } from "../../../services/theaterService";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { saveScreenRoom } from "../../../redux/slices/screenRoomData";
 
 export default function AdminScreenRoom() {
   const [screenRooms, setScreenRooms] = useState([]);
@@ -22,6 +25,7 @@ export default function AdminScreenRoom() {
   const [idUpdate, setIdUpdate] = useState(null);
   const [search, setSearch] = useState("");
   const [theaters, setTheaters] = useState([]);
+  const dispath = useDispatch();
   const [screenRoom, setScreenRoom] = useState({
     theaterId: "",
     screenName: "",
@@ -116,7 +120,6 @@ export default function AdminScreenRoom() {
       });
       checkForm = false;
     }
-    console.log(screenRoom.theaterId ? "true" : "fasle");
 
     if (!screenRoom.screenName) {
       setError((pre) => {
@@ -128,6 +131,14 @@ export default function AdminScreenRoom() {
     if (!screenRoom.numberColSeat) {
       setError((pre) => {
         return { ...pre, numberColSeat: "Number col seat can not blank" };
+      });
+      checkForm = false;
+    } else if (screenRoom.numberColSeat % 2 !== 0) {
+      setError((pre) => {
+        return {
+          ...pre,
+          numberColSeat: "Number col seat must be an even number",
+        };
       });
       checkForm = false;
     }
@@ -169,7 +180,7 @@ export default function AdminScreenRoom() {
       screenName: screenRoom.screenName,
       numberColSeat: screenRoom.numberColSeat,
       numberRowSeat: screenRoom.numberRowSeat,
-      isDoubleSeat: screenRoom.isDoubleSeat,
+      isDoubleSeat: screenRoom.doubleSeat,
     });
     setIsShowForm(true);
     setIdUpdate(screenRoom.id);
@@ -183,8 +194,8 @@ export default function AdminScreenRoom() {
     if (!isFormValid) {
       message.error("Create error");
     } else {
-      const screenRoom = {
-        theaterId: screenRoom.theater.id,
+      const newScreenRoom = {
+        theaterId: screenRoom.theaterId,
         screenName: screenRoom.screenName,
         numberColSeat: screenRoom.numberColSeat,
         numberRowSeat: screenRoom.numberRowSeat,
@@ -192,30 +203,28 @@ export default function AdminScreenRoom() {
       };
       if (isUpdate) {
         try {
-          const response = await updateScreenRoom(screenRoom, idUpdate);
-          if (response) {
-            message.success("Update screen room success");
-            handleCloseForm();
-            fetchScreenRooms();
-          } else {
-            message.error("Screen room name existed");
-          }
+          const response = await updateScreenRoom(newScreenRoom, idUpdate);
+
+          message.success("Update screen room success");
+          handleCloseForm();
+          fetchScreenRooms();
         } catch (err) {
-          setError({ ...error, screenName: "Screen room name existed" });
+          setError({
+            ...error,
+            screenName: "Screen room name existed or is being used",
+          });
           message.error("Create error");
         }
       } else {
         try {
-          const response = await createScreenRoom(screenRoom);
-          if (response) {
-            message.success("Create screen room success");
-            setIsShowForm(false);
-            fetchScreenRooms();
-          } else {
-            message.error("Screen room name existed");
-          }
+          const response = await createScreenRoom(newScreenRoom);
+
+          message.success("Create screen room success");
+          setIsShowForm(false);
+          fetchScreenRooms();
         } catch (err) {
           setError({ ...error, screenName: "Screen room name existed" });
+          console.log(err);
           message.error("Create error");
         }
       }
@@ -227,7 +236,11 @@ export default function AdminScreenRoom() {
     setIdDelete(null);
   };
 
-  const handleDeleteTheater = async () => {
+  const handleViewDetail = (screenRoom) => {
+    dispath(saveScreenRoom(screenRoom));
+  };
+
+  const handleDeleteScreen = async () => {
     try {
       const response = await deleteScreenRoom(idDelete);
       if (response != null) {
@@ -238,7 +251,7 @@ export default function AdminScreenRoom() {
         setCurrentPage(1);
       }
     } catch (error) {
-      message.error("Delete screen room error");
+      message.error("Cannot delete , because this theater is already in use");
     }
     handleCloseConfirm();
   };
@@ -287,9 +300,11 @@ export default function AdminScreenRoom() {
       key: "action",
       render: (_, record) => (
         <div className="flex gap-4">
-          <Button type="primary" onClick={() => handelOpenFormUpdate(record)}>
-            Detail
-          </Button>
+          <Link to={"/admin/screenRoomDetail"}>
+            <Button type="primary" onClick={() => handleViewDetail(record)}>
+              Detail
+            </Button>
+          </Link>
           <Button type="primary" onClick={() => handelOpenFormUpdate(record)}>
             Edit
           </Button>
@@ -353,7 +368,7 @@ export default function AdminScreenRoom() {
         <Modal
           title="Confirm Delete"
           open={formConfirm}
-          onOk={handleDeleteTheater}
+          onOk={handleDeleteScreen}
           onCancel={handleCloseConfirm}
         >
           <p>Do you want delete this screen room ?</p>
@@ -435,7 +450,7 @@ export default function AdminScreenRoom() {
             </div>
 
             <div>
-              <label>Double Seat :</label>
+              <label className="mr-5">Double Seat :</label>
               <Checkbox
                 name="isDoubleSeat"
                 value={screenRoom.isDoubleSeat}
