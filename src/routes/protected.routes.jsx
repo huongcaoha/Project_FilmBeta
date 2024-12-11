@@ -5,6 +5,7 @@ import DashBoard from "../pages/admin/DashBoard";
 import User from "../pages/user/User";
 import { Suspense } from "react";
 import CategoryManager from "../pages/admin/CategoryManager";
+import AdminScreenRoom from "../pages/admin/screenRoom/AdminScreenRoom";
 
 const contentStyle = {
   padding: 50,
@@ -47,6 +48,14 @@ const protectedRouter = [
         element: (
           <LazyLoad>
             <CategoryManager />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "screenRooms",
+        element: (
+          <LazyLoad>
+            <AdminScreenRoom />
           </LazyLoad>
         ),
       },

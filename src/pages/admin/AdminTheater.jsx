@@ -1,12 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Input, Modal, message } from "antd";
-import { RedoOutlined } from "@ant-design/icons";
+import { Table, Button, Input, Modal, message, Select } from "antd";
+import { LoadingOutlined, RedoOutlined } from "@ant-design/icons";
 
-import { createTheater, fetchAllTheater } from "../../services/theaterService";
+import {
+  createTheater,
+  deleteTheater,
+  fetchAllTheater,
+  getCity,
+  updateTheater,
+} from "../../services/theaterService";
+import { useDebounce } from "../../hooks/useDebounce";
 
 export default function AdminTheater() {
   const [theaters, setTheaters] = useState([]);
   const [isShowForm, setIsShowForm] = useState(false);
+  const [citis, setCitis] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+  const [formConfirm, setFormConfirm] = useState(false);
+  const [idDelete, setIdDelete] = useState(null);
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [idUpdate, setIdUpdate] = useState(null);
+  const [search, setSearch] = useState("");
+  const [theater, setTheater] = useState({
+    name: "",
+    address: "",
+    phoneNumber: "",
+    numberOfScreens: "",
+  });
   const [error, setError] = useState({
     name: "",
     address: "",
@@ -16,26 +38,46 @@ export default function AdminTheater() {
 
   const fetchTheater = async () => {
     try {
-      const response = await fetchAllTheater();
+      let response = null;
+      if (search) {
+        response = await fetchAllTheater(currentPage - 1, 5, search);
+      } else {
+        response = await fetchAllTheater(currentPage - 1);
+      }
       setTheaters(response.data.theaters.map((t, index) => ({ ...t, index })));
+      setTotalPage(response.data.totalPage);
     } catch (error) {
       console.error(error);
     }
   };
-  useEffect(() => {
-    fetchTheater();
-  }, []);
 
-  const handleAction = (key) => {
-    console.log("Action clicked for:", key);
+  const useDebounceSearch = useDebounce(search, 300);
+
+  const getAllCity = async () => {
+    try {
+      const citis = await getCity();
+      setCitis(citis);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleOnsubmit = (e) => {
+  useEffect(() => {
+    fetchTheater();
+    getAllCity();
+  }, [currentPage, useDebounceSearch]);
+
+  const handleOnsubmitSearch = (e) => {
     e.preventDefault();
+    fetchTheater(search);
   };
 
   const handleOpenForm = () => {
     setIsShowForm(true);
+  };
+
+  const handleChangePage = (page) => {
+    setCurrentPage(page);
   };
 
   const handleCloseForm = () => {
@@ -46,75 +88,158 @@ export default function AdminTheater() {
       phoneNumber: "",
       numberOfScreens: "",
     });
+    setTheater({
+      name: "",
+      address: "",
+      phoneNumber: "",
+      numberOfScreens: "",
+    });
+    setIsUpdate(false);
+    setIdUpdate(null);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const checkFormData = (e) => {
     let checkForm = true;
-    if (!e.target.name.value) {
+    if (!theater.name) {
       setError((pre) => {
         return { ...pre, name: "Theater name can not blank" };
       });
       checkForm = false;
     }
 
-    if (!e.target.address.value) {
+    if (!theater.address) {
       setError((pre) => {
         return { ...pre, address: "Address can not blank" };
       });
       checkForm = false;
     }
 
-    if (!e.target.phoneNumber.value) {
+    if (!theater.phoneNumber) {
       setError((pre) => {
         return { ...pre, phoneNumber: "Phone number can not blank" };
       });
       checkForm = false;
     }
+
     const pattern = /^0(3[2-9]|5[6-9]|7[0-9]|8[0-9]|9[0-9])[0-9]{7}$/;
-    if (!pattern.test(e.target.phoneNumber.value)) {
+    if (!pattern.test(theater.phoneNumber)) {
       setError((pre) => {
         return { ...pre, phoneNumber: "Phone number invalid" };
       });
       checkForm = false;
     }
 
-    if (!e.target.numberOfScreens.value) {
+    if (!theater.numberOfScreens) {
       setError((pre) => {
         return { ...pre, numberOfScreens: "Number screen can not blank" };
       });
       checkForm = false;
     }
+    return checkForm;
+  };
 
-    if (!checkForm) {
+  const checkFormValid = (e) => {
+    const { name, value } = e.target;
+    const newTheater = { ...theater, [name]: value };
+    setTheater(newTheater);
+    if (!value) {
+      const newError = { ...error, [name]: name + " can not blank" };
+      setError(newError);
+    } else {
+      const newError = { ...error, [name]: "" };
+      setError(newError);
+    }
+  };
+
+  const handelOpenFormUpdate = (theater) => {
+    setIsUpdate(true);
+    setTheater({
+      name: theater.name,
+      address: theater.address,
+      phoneNumber: theater.phoneNumber,
+      numberOfScreens: theater.numberOfScreens,
+    });
+    setIsShowForm(true);
+    setIdUpdate(theater.id);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    let isFormValid = checkFormData();
+
+    if (!isFormValid) {
       message.error("Create error");
     } else {
       const theater = {
-        name: e.target.name.value,
+        name: e.target.name.value.trim(),
         address: e.target.address.value,
         phoneNumber: e.target.phoneNumber.value,
         numberOfScreens: e.target.numberOfScreens.value,
       };
-      try {
-        const response = await createTheater(theater);
-        if (response) {
-          message.success("create theater success");
-          setIsShowForm(false);
-          fetchTheater();
-        } else {
-          message.error("theater name existed");
+      if (isUpdate) {
+        try {
+          const response = await updateTheater(theater, idUpdate);
+          if (response) {
+            message.success("Update theater success");
+            handleCloseForm();
+            fetchTheater();
+          } else {
+            message.error("theater name existed");
+          }
+        } catch (err) {
+          setError({ ...error, name: "theater name existed" });
+          message.error("Create error");
         }
-      } catch (error) {
-        console.log(error);
+      } else {
+        try {
+          const response = await createTheater(theater);
+          if (response) {
+            message.success("create theater success");
+            setIsShowForm(false);
+            fetchTheater();
+          } else {
+            message.error("theater name existed");
+          }
+        } catch (err) {
+          setError({ ...error, name: err.response.data.message.name });
+          message.error("Create error");
+        }
       }
     }
+  };
+
+  const handleCloseConfirm = () => {
+    setFormConfirm(false);
+    setIdDelete(null);
+  };
+
+  const handleDeleteTheater = async () => {
+    try {
+      const response = await deleteTheater(idDelete);
+      if (response != null) {
+        message.success("Delete theater successfully");
+        setTheaters((pre) => {
+          return pre.filter((t) => t.id != idDelete);
+        });
+        setCurrentPage(1);
+      }
+    } catch (error) {
+      message.error("Delete theater error");
+    }
+    handleCloseConfirm();
+  };
+
+  const handleOpenConfirm = (id) => {
+    setIdDelete(id);
+    setFormConfirm(true);
   };
 
   const columns = [
     {
       title: "STT",
       key: "stt",
-      render: (_, __, index) => index + 1, // Lấy chỉ số và cộng thêm 1
+      render: (_, __, index) => (currentPage - 1) * 5 + index + 1, // Lấy chỉ số và cộng thêm 1
     },
     {
       title: "Address",
@@ -141,13 +266,13 @@ export default function AdminTheater() {
       key: "action",
       render: (_, record) => (
         <div className="flex gap-4">
-          <Button type="primary" onClick={() => handleAction(record.key)}>
+          <Button type="primary" onClick={() => handelOpenFormUpdate(record)}>
             Edit
           </Button>
           <Button
             type="primary"
             danger
-            onClick={() => handleAction(record.key)}
+            onClick={() => handleOpenConfirm(record.id)}
           >
             Delete
           </Button>
@@ -158,6 +283,7 @@ export default function AdminTheater() {
   return (
     <div>
       <h1 className="text-4xl font-bold">Theater Management</h1>
+      {isLoading ? <LoadingOutlined /> : <></>}
 
       <div className="px-[150px] py-[50px]">
         <div className="flex justify-end">
@@ -173,11 +299,13 @@ export default function AdminTheater() {
         <div>
           <form
             className="flex gap-4 justify-end m-6"
-            onSubmit={handleOnsubmit}
+            onSubmit={handleOnsubmitSearch}
           >
             <Input
               className="w-[300px] "
               placeholder="Search theater name"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             ></Input>
             <Button htmlType="submit">
               <RedoOutlined />
@@ -185,12 +313,32 @@ export default function AdminTheater() {
           </form>
         </div>
 
-        <Table dataSource={theaters} columns={columns} />
+        <Table
+          dataSource={theaters}
+          columns={columns}
+          pagination={{
+            current: currentPage, // Trang hiện tại
+            pageSize: 5, // Số lượng mục trên mỗi trang
+            total: totalPage * 5, // Tổng số mục
+            onChange: handleChangePage, // Hàm xử lý khi thay đổi trang
+          }}
+        />
       </div>
 
       <div>
         <Modal
-          title="Create Theater"
+          title="Confirm Delete"
+          open={formConfirm}
+          onOk={handleDeleteTheater}
+          onCancel={handleCloseConfirm}
+        >
+          <p>Do you want delete this theater ?</p>
+        </Modal>
+      </div>
+
+      <div>
+        <Modal
+          title={isUpdate ? "Update Theater" : "Create Theater"}
           open={isShowForm}
           footer={null}
           onCancel={() => handleCloseForm()}
@@ -198,7 +346,11 @@ export default function AdminTheater() {
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div>
               <label>Theater Name :</label>
-              <Input name="name"></Input>
+              <Input
+                value={theater.name}
+                name="name"
+                onChange={checkFormValid}
+              ></Input>
               {error.name ? (
                 <p className="text-red-600">{error.name}</p>
               ) : (
@@ -207,8 +359,20 @@ export default function AdminTheater() {
             </div>
 
             <div>
-              <label>Address :</label>
-              <Input name="address"></Input>
+              <label className="mr-5">Address :</label>
+              <select
+                value={theater.address}
+                name="address"
+                onChange={checkFormValid}
+              >
+                <option value={""}>Select address</option>
+                {citis?.map((city) => (
+                  <option key={city.id} value={city.cityName}>
+                    {city.cityName}
+                  </option>
+                ))}
+              </select>
+
               {error.address ? (
                 <p className="text-red-600">{error.address}</p>
               ) : (
@@ -218,7 +382,11 @@ export default function AdminTheater() {
 
             <div>
               <label>Phone Number :</label>
-              <Input name="phoneNumber"></Input>
+              <Input
+                value={theater.phoneNumber}
+                name="phoneNumber"
+                onChange={checkFormValid}
+              ></Input>
               {error.phoneNumber ? (
                 <p className="text-red-600">{error.phoneNumber}</p>
               ) : (
@@ -228,7 +396,12 @@ export default function AdminTheater() {
 
             <div>
               <label>Number Of Screens :</label>
-              <Input type="number" name="numberOfScreens"></Input>
+              <Input
+                value={theater.numberOfScreens}
+                type="number"
+                name="numberOfScreens"
+                onChange={checkFormValid}
+              ></Input>
               {error.numberOfScreens ? (
                 <p className="text-red-600">{error.numberOfScreens}</p>
               ) : (
@@ -242,7 +415,7 @@ export default function AdminTheater() {
                 className="w-[100px] h-[35px]"
                 htmlType="submit"
               >
-                Create
+                {isUpdate ? "Update" : "Create"}
               </Button>
             </div>
           </form>

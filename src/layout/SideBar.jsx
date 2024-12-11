@@ -36,7 +36,7 @@ const items = [
     key: "3",
     icon: <InsertRowLeftOutlined style={{ fontSize: "20px" }} />,
     label: (
-      <Link to={""} className="text-base font-semibold mb-5">
+      <Link to={"/admin/screenRooms"} className="text-base font-semibold mb-5">
         ScreenRoom Management
       </Link>
     ),
