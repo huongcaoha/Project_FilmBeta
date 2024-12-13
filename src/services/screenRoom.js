@@ -50,3 +50,19 @@ export const getSeatByScreen = async (screenRoomId) => {
   );
   return response.data;
 };
+
+export const getScreenByTheater = async (theaterId) => {
+  const response = await baseUrl.get(
+    `/api.myService.com/v1/admin/screenRooms/getScreenByTheater/${theaterId}`
+  );
+
+  return response.data;
+};
+
+export const getAllScreen = async () => {
+  const response = await baseUrl.get(
+    `/api.myService.com/v1/admin/screenRooms/getAll`
+  );
+
+  return response.data;
+};

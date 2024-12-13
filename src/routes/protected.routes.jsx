@@ -7,6 +7,8 @@ import { Suspense } from "react";
 import CategoryManager from "../pages/admin/CategoryManager";
 import AdminScreenRoom from "../pages/admin/screenRoom/AdminScreenRoom";
 import AdminScreenRoomDetail from "../pages/admin/screenRoom/AdminScreenRoomDetail";
+import AdminShowTime from "../pages/admin/adminShowTime/AdminShowTime";
+import AdminBooking from "../pages/admin/adminBooking/AdminBooking";
 
 const contentStyle = {
   padding: 50,
@@ -65,6 +67,22 @@ const protectedRouter = [
         element: (
           <LazyLoad>
             <AdminScreenRoomDetail />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "showTimes",
+        element: (
+          <LazyLoad>
+            <AdminShowTime />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "bookings",
+        element: (
+          <LazyLoad>
+            <AdminBooking />
           </LazyLoad>
         ),
       },

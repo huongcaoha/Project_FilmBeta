@@ -45,7 +45,7 @@ const items = [
     key: "4",
     icon: <FieldTimeOutlined style={{ fontSize: "20px" }} />,
     label: (
-      <Link to={""} className="text-base font-semibold mb-5">
+      <Link to={"/admin/showTimes"} className="text-base font-semibold mb-5">
         ShowTime Management
       </Link>
     ),
@@ -63,7 +63,7 @@ const items = [
     key: "6",
     icon: <BookOutlined style={{ fontSize: "20px" }} />,
     label: (
-      <Link to={""} className="text-base font-semibold mb-5">
+      <Link to={"/admin/bookings"} className="text-base font-semibold mb-5">
         Booking Management
       </Link>
     ),
