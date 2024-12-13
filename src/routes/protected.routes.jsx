@@ -5,8 +5,13 @@ import DashBoard from "../pages/admin/DashBoard";
 import User from "../pages/user/User";
 import { Suspense } from "react";
 import CategoryManager from "../pages/admin/CategoryManager";
+<<<<<<< HEAD
 import MovieManager from "../pages/admin/MovieManager";
 import NewsManager from "../pages/admin/NewsManager";
+=======
+import AdminScreenRoom from "../pages/admin/screenRoom/AdminScreenRoom";
+import AdminScreenRoomDetail from "../pages/admin/screenRoom/AdminScreenRoomDetail";
+>>>>>>> 5fb25d16694f0ec5214e535f08abc3721c05b732
 
 const contentStyle = {
   padding: 50,
@@ -38,7 +43,11 @@ const protectedRouter = [
       },
       {
         path: "theaters",
-        element: <AdminTheater />,
+        element: (
+          <LazyLoad>
+            <AdminTheater />
+          </LazyLoad>
+        ),
       },
       {
         path: "category",
@@ -49,18 +58,32 @@ const protectedRouter = [
         ),
       },
       {
+<<<<<<< HEAD
         path: "movie",
         element: (
           <LazyLoad>
             <MovieManager />
+=======
+        path: "screenRooms",
+        element: (
+          <LazyLoad>
+            <AdminScreenRoom />
+>>>>>>> 5fb25d16694f0ec5214e535f08abc3721c05b732
           </LazyLoad>
         ),
       },
       {
+<<<<<<< HEAD
         path: "news",
         element: (
           <LazyLoad>
             <NewsManager />
+=======
+        path: "screenRoomDetail",
+        element: (
+          <LazyLoad>
+            <AdminScreenRoomDetail />
+>>>>>>> 5fb25d16694f0ec5214e535f08abc3721c05b732
           </LazyLoad>
         ),
       },
