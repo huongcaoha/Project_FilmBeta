@@ -5,6 +5,8 @@ import DashBoard from "../pages/admin/DashBoard";
 import User from "../pages/user/User";
 import { Suspense } from "react";
 import CategoryManager from "../pages/admin/CategoryManager";
+import MovieManager from "../pages/admin/MovieManager";
+import NewsManager from "../pages/admin/NewsManager";
 
 const contentStyle = {
   padding: 50,
@@ -43,6 +45,22 @@ const protectedRouter = [
         element: (
           <LazyLoad>
             <CategoryManager />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "movie",
+        element: (
+          <LazyLoad>
+            <MovieManager />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "news",
+        element: (
+          <LazyLoad>
+            <NewsManager />
           </LazyLoad>
         ),
       },
