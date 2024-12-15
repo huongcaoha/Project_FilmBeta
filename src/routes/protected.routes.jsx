@@ -11,6 +11,7 @@ import AdminScreenRoom from "../pages/admin/screenRoom/AdminScreenRoom";
 import AdminScreenRoomDetail from "../pages/admin/screenRoom/AdminScreenRoomDetail";
 import AdminShowTime from "../pages/admin/adminShowTime/AdminShowTime";
 import AdminBooking from "../pages/admin/adminBooking/AdminBooking";
+import BookingTicket from "../pages/user/BookingTicket";
 
 const contentStyle = {
   padding: 50,
@@ -93,7 +94,16 @@ const protectedRouter = [
   {
     path: "/user",
     element: <User />,
-    children: [],
+    children: [
+      {
+        path: "bookingTicket",
+        element: (
+          <LazyLoad>
+            <BookingTicket />
+          </LazyLoad>
+        ),
+      },
+    ],
   },
 ];
 export default protectedRouter;

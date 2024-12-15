@@ -280,7 +280,7 @@ export default function AdminShowTime() {
             message.error("show time name existed");
           }
         } catch (err) {
-          // setError({ ...error, showTime: err.response.data });
+          setError({ ...error,  showTime: err?.response?.data.message.showTime});
           message.error("Show time existed or time must be future or present");
         }
       } else {
@@ -291,9 +291,9 @@ export default function AdminShowTime() {
             setIsShowForm(false);
             fetchShowTimes();
           } else {
-            // message.error(
-            //   "Show time existed or time must be future or present"
-            // );
+            message.error(
+              "Show time existed or time must be future or present"
+            );
             setError({
               ...error,
               showTime: err?.response?.data.message.showTime,
@@ -302,11 +302,11 @@ export default function AdminShowTime() {
         } catch (err) {
           console.log("Error: ", err);
 
-          setError({
-            ...error,
-            showTime: err?.response?.data.message.showTime,
-          });
-          // message.error("Show time existed or time must be future or present");
+          // setError({
+          //   ...error,
+          //   showTime: err?.response?.data.message.showTime,
+          // });
+          message.error("Show time existed or time must be future or present");
         }
       }
     }

@@ -33,7 +33,6 @@ export const fetchAllShowTime = async (
   // console.log(url);
   const url = `/api.myService.com/v1/admin/showTimes?movieId=${movieId}&theaterId=${theaterId}&screenRoomId=${screenRoomId}&showTimeId=${showTimeId}`;
   const response = await baseUrl.get(url);
-  console.log(url);
   return response.data;
 };
 
