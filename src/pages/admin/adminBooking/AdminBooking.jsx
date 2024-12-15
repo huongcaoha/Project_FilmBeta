@@ -7,6 +7,13 @@ import {
   getBookingSeatById,
 } from "../../../services/booking";
 import { useDebounce } from "../../../hooks/useDebounce";
+import {
+  getMovieByMonth,
+  getShowTimeByScreenRoom,
+} from "../../../services/showTime";
+import baseUrl from "../../../apis/instance";
+import { getListTheaters } from "../../../services/theaterService";
+import { getScreenByTheater } from "../../../services/screenRoom";
 
 export default function AdminBooking() {
   const [bookings, setBookings] = useState([]);
@@ -29,12 +36,14 @@ export default function AdminBooking() {
 
   const fetchBookings = async () => {
     try {
-      let response = null;
-      if (search) {
-        response = await fetchAllBookings(currentPage - 1, 5, search);
-      } else {
-        response = await fetchAllBookings(currentPage - 1);
-      }
+      const response = await fetchAllBookings(
+        currentPage - 1,
+        5,
+        search.movieId,
+        search.theaterId,
+        search.screenRoomId,
+        search.showTimeId
+      );
       setBookings(response.bookings.map((t, index) => ({ ...t, index })));
       setTotalPage(response.totalPage);
     } catch (error) {
@@ -42,7 +51,45 @@ export default function AdminBooking() {
     }
   };
 
-  const getMovies = async () => {};
+  const getMovies = async () => {
+    try {
+      const response = await getMovieByMonth();
+      setMovies(response);
+    } catch (error) {}
+  };
+
+  const getTheaters = async () => {
+    try {
+      const response = await getListTheaters();
+      setTheaters(response);
+    } catch (error) {}
+  };
+
+  const getScreenRooms = async () => {
+    if (search.theaterId) {
+      try {
+        const response = await getScreenByTheater(search.theaterId);
+        setScreenRooms(response);
+      } catch (error) {}
+    }
+  };
+
+  const getShowTimes = async () => {
+    if (search.screenRoomId) {
+      try {
+        const response = await getShowTimeByScreenRoom(search.screenRoomId);
+        setShowTimes(response);
+      } catch (error) {}
+    }
+  };
+
+  useEffect(() => {
+    getMovies();
+    getTheaters();
+    getScreenRooms();
+    getShowTimes();
+    fetchBookings();
+  }, [search]);
 
   const handleChangePage = (page) => {
     setCurrentPage(page);
@@ -65,7 +112,7 @@ export default function AdminBooking() {
     if (bookingId) {
       getBookingDetail(bookingId);
     }
-  }, [currentPage, useDebounceSearch, bookingId]);
+  }, [currentPage, useDebounceSearch, bookingId, search]);
 
   const handleCloseDetail = () => {
     setFormDetail(false);
@@ -155,35 +202,73 @@ export default function AdminBooking() {
       <div className="px-[150px] py-[50px]">
         <div className="m-10 flex justify-end">
           <Select
-            defaultValue=""
+            value={search.movieId}
             style={{ width: 200 }}
-            // onChange={handleChange} // Bắt sự kiện thay đổi
+            onChange={(value) => {
+              return setSearch({ ...search, movieId: value });
+            }} // Bắt sự kiện thay đổi
           >
             <Option value="">Search Movie</Option>
+            {movies.map((movie, index) => (
+              <Option key={index} value={movie.id}>
+                {movie.movieName}
+              </Option>
+            ))}
           </Select>
 
           <Select
-            defaultValue=""
+            value={search.theaterId}
             style={{ width: 200 }}
-            // onChange={handleChange} // Bắt sự kiện thay đổi
+            onChange={(value) => {
+              const newSearch = {
+                ...search,
+                theaterId: value,
+                screenRoomId: "",
+                showTimeId: "",
+              };
+              return setSearch(newSearch);
+            }}
           >
             <Option value="">Search Theater</Option>
+            {theaters.map((theater, index) => (
+              <Option key={index} value={theater.id}>
+                {theater.name}
+              </Option>
+            ))}
           </Select>
 
           <Select
-            defaultValue=""
+            value={search.screenRoomId}
             style={{ width: 200 }}
-            // onChange={handleChange} // Bắt sự kiện thay đổi
+            onChange={(value) => {
+              return setSearch({
+                ...search,
+                screenRoomId: value,
+                showTimeId: "",
+              });
+            }}
           >
             <Option value="">Search Screen</Option>
+            {screenRooms.map((screenRoom, index) => (
+              <Option key={index} value={screenRoom.id}>
+                {screenRoom.screenName}
+              </Option>
+            ))}
           </Select>
 
           <Select
-            defaultValue=""
+            value={search.showTimeId}
             style={{ width: 200 }}
-            // onChange={handleChange} // Bắt sự kiện thay đổi
+            onChange={(value) => {
+              setSearch({ ...search, showTimeId: value });
+            }}
           >
             <Option value="">Search Show Time</Option>
+            {showTimes.map((showTime, index) => (
+              <Option key={index} value={showTime.id}>
+                {showTime.showTime}
+              </Option>
+            ))}
           </Select>
         </div>
 

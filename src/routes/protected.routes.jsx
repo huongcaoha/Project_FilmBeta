@@ -5,6 +5,8 @@ import DashBoard from "../pages/admin/DashBoard";
 import User from "../pages/user/User";
 import { Suspense } from "react";
 import CategoryManager from "../pages/admin/CategoryManager";
+import MovieManager from "../pages/admin/MovieManager";
+import NewsManager from "../pages/admin/NewsManager";
 import AdminScreenRoom from "../pages/admin/screenRoom/AdminScreenRoom";
 import AdminScreenRoomDetail from "../pages/admin/screenRoom/AdminScreenRoomDetail";
 import AdminShowTime from "../pages/admin/adminShowTime/AdminShowTime";

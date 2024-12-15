@@ -3,6 +3,7 @@ import {
   BookOutlined,
   DashboardOutlined,
   FieldTimeOutlined,
+  FileSearchOutlined,
   HomeOutlined,
   InsertRowLeftOutlined,
   MailOutlined,
@@ -72,7 +73,7 @@ const items = [
     key: "7",
     icon: <YoutubeOutlined style={{ fontSize: "20px" }} />,
     label: (
-      <Link to={""} className="text-base font-semibold mb-5">
+      <Link to={"/admin/movie"} className="text-base font-semibold mb-5">
         Movie Management
       </Link>
     ),
@@ -101,6 +102,15 @@ const items = [
     label: (
       <Link to={""} className="text-base font-semibold mb-5">
         Banner Management
+      </Link>
+    ),
+  },
+  {
+    key: "11",
+    icon: <FileSearchOutlined style={{ fontSize: "20px" }} />,
+    label: (
+      <Link to={"/admin/news"} className="text-base font-semibold mb-5">
+        News Management
       </Link>
     ),
   },

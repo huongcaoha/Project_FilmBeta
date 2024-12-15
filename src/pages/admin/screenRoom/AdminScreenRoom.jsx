@@ -220,7 +220,7 @@ export default function AdminScreenRoom() {
           const response = await createScreenRoom(newScreenRoom);
 
           message.success("Create screen room success");
-          setIsShowForm(false);
+          handleCloseForm();
           fetchScreenRooms();
         } catch (err) {
           setError({ ...error, screenName: "Screen room name existed" });

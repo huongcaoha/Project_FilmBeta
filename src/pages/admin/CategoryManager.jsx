@@ -5,7 +5,16 @@ import {
   fetchAllCategory,
   updateCategory,
 } from "../../services/categoryService";
-import { Button, Form, Input, message, Modal, Pagination, Table } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Modal,
+  Pagination,
+  Select,
+  Table,
+} from "antd";
 import { CloseOutlined, ReloadOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../hooks/useDebounce";
 
@@ -23,6 +32,7 @@ export default function CategoryManager() {
   const [isEditMode, setIsEditMode] = useState(false);
 
   const debouceSearch = useDebounce(searchValue, 300);
+  const [sortOrder, setSortOrder] = useState(null); //Sắp xếp theo tên
 
   //Cập nhật
   const handleEdit = (id) => {
@@ -46,32 +56,14 @@ export default function CategoryManager() {
     const response = await deleteCategory(idCate)
       .then(() => {
         message.success("Danh mục đã được xóa thành công.");
+        setCategories((prev) => prev.filter((cate) => cate.id !== idCate));
         setIsShowModalDelete(false);
-        setCurrentPage(0);
+        setCurrentPage(0); //load về trang đầu tiên
       })
       .catch((err) => {
-        console.log(err);
-
         message.error(err.response.data.message.message);
       });
   };
-
-  // const handleConfirmDelete = async () => {
-  //   try {
-  //     const response = await deleteCategory(idCate);
-  //     if (response.status === 200) {
-  //       message.success("Danh mục đã được xóa thành công.");
-  //       setIsShowModalDelete(false);
-  //       setCurrentPage(0);
-  //     } else if (response.status === 401) {
-  //       message.error("Danh mục đã có sản phẩm, không thể xóa.");
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-
-  //     message.error("Có lỗi xảy ra khi xóa danh mục.");
-  //   }
-  // };
 
   const handleCancelDelete = () => {
     setIsShowModalDelete(false);
@@ -91,6 +83,7 @@ export default function CategoryManager() {
     } catch (error) {}
   };
 
+  //Lưu dữ liệu
   useEffect(() => {
     getAllCategory();
   }, [pageSize, currentPage, debouceSearch]);
@@ -172,6 +165,9 @@ export default function CategoryManager() {
   };
   const handleCloseModal = () => {
     setIsShowModal(false);
+    setIsEditMode(false);
+    // Reset form
+    form.resetFields();
   };
 
   const onFinish = async (category) => {
@@ -198,9 +194,8 @@ export default function CategoryManager() {
       //Đóng modal
       handleCloseModal();
       await getAllCategory();
+      setCurrentPage(0);
     } catch (error) {
-      console.log(error);
-
       if (error.response && error.response.status === 400) {
         // Hiển thị thông báo lỗi dưới trường categoryName
         form.setFields([
@@ -222,6 +217,26 @@ export default function CategoryManager() {
 
   const handleResetSearch = () => {
     setSearchValue("");
+  };
+
+  //Sắp xếp
+  const handleSortChange = (value) => {
+    setSortOrder(value);
+    const sortedData = [...categories].sort((a, b) => {
+      if (value === "asc") {
+        return a.categoryName.localeCompare(b.categoryName);
+      } else {
+        return b.categoryName.localeCompare(a.categoryName);
+      }
+    });
+    setCategories(sortedData);
+  };
+
+  //Tìm kiếm
+  const handleSearch = (value) => {
+    setSearchValue(value);
+    setCurrentPage(0);
+    getAllCategory(value, 0);
   };
   return (
     <div>
@@ -309,16 +324,33 @@ export default function CategoryManager() {
             Add category
           </Button>
         </div>
-        <div className="flex justify-end gap-4 mb-4">
-          <Input.Search
-            onChange={(e) => setSearchValue(e.target.value)}
-            value={searchValue}
-            className="w-[400px] "
-          />
-          <ReloadOutlined onClick={handleResetSearch} />
+        <div className="flex justify-between">
+          <div>
+            <Select
+              placeholder="Sắp xếp"
+              style={{ width: 200 }}
+              onChange={handleSortChange}
+            >
+              <Select.Option value="asc">Tăng dần</Select.Option>
+              <Select.Option value="desc">Giảm dần</Select.Option>
+            </Select>
+          </div>
+          <div className="flex justify-end gap-4 mb-4">
+            <Input.Search
+              onChange={(e) => handleSearch(e.target.value)}
+              value={searchValue}
+              className="w-[400px] "
+            />
+            <ReloadOutlined onClick={handleResetSearch} />
+          </div>
         </div>
         <div className="mb-4">
-          <Table dataSource={dataSource} columns={columns} pagination={false} />
+          <Table
+            loading={isLoading}
+            dataSource={dataSource}
+            columns={columns}
+            pagination={false}
+          />
         </div>
         <div className="flex justify-end mt-4">
           <Pagination

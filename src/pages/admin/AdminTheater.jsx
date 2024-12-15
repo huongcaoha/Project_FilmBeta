@@ -196,7 +196,7 @@ export default function AdminTheater() {
           const response = await createTheater(theater);
           if (response) {
             message.success("create theater success");
-            setIsShowForm(false);
+            handleCloseForm();
             fetchTheater();
           } else {
             message.error("theater name existed");

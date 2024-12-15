@@ -66,3 +66,8 @@ export const getAllScreen = async () => {
 
   return response.data;
 };
+
+export const saveDataScreenRoomSeat = async (seats) => {
+    const response = baseUrl.put(`/api.myService.com/v1/admin/seats`,seats);
+    return response.data ;
+}

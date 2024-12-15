@@ -53,3 +53,10 @@ export const updateTheater = async (theater, id) => {
   );
   return response.data;
 };
+
+export const getListTheaters = async () => {
+  const response = await baseUrl.get(
+    "/api.myService.com/v1/admin/theaters/getTheaters"
+  );
+  return response.data;
+};

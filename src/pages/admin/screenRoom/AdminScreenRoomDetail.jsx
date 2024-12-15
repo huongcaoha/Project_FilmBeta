@@ -1,24 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSeatByScreen } from "../../../services/screenRoom";
+import { getSeatByScreen, saveDataScreenRoomSeat } from "../../../services/screenRoom";
+import "../../../css/MovieBooking.css";
+import { Button, message } from "antd";
 
 export default function AdminScreenRoomDetail() {
   const screenRoomDetail = useSelector((state) => state.screenRoomDetail);
-  const [cols, setCols] = useState(screenRoomDetail.numberColSeat);
   const [seats, setSeats] = useState([]);
-  const [seatStandards, setSeatStandards] = useState([]);
-  const [seatSweetBoxs, setSeatSweetBoxs] = useState([]);
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  
+  const rows = screenRoomDetail.numberRowSeat; // Số hàng ghế
+  const cols = screenRoomDetail.numberColSeat; // Số cột ghế
 
-  const changeStatusSeat = (id) => {
-    const newSeats = seats.map((seat) => {
-      if (seat.id === id) {
-        return { ...seat, status: !seat.status };
-      } else {
-        return seat;
+  const toggleSeat = (seat) => {
+    setSeats(seats.map(s => {
+      if(s.id === seat.id){
+        return {...s,status : !s.status} ;
+      }else {
+        return s ;
       }
-    });
-    setSeats(newSeats);
+    }))
+
   };
+
+  const handleSaveData = async () => {
+    const response = await saveDataScreenRoomSeat(seats);
+    message.success("Update successfully");
+  }
 
   const getListSeats = async () => {
     try {
@@ -31,25 +39,16 @@ export default function AdminScreenRoomDetail() {
 
   useEffect(() => {
     getListSeats();
-  }, []);
+  }, [screenRoomDetail.id]);
 
-  useEffect(() => {
-    if (seats.length > 0) {
-      if (screenRoomDetail.doubleSeat) {
-        const standards = seats.slice(
-          0,
-          seats.length - screenRoomDetail.numberColSeat
-        );
-        const sweetBoxes = seats.slice(
-          seats.length - screenRoomDetail.numberColSeat
-        );
-        setSeatStandards(standards);
-        setSeatSweetBoxs(sweetBoxes);
-      } else {
-        setSeatStandards(seats);
-      }
+  // Chia ghế thành hàng (row) và cột (col)
+  const seatGrid = () => {
+    const grid = [];
+    for (let i = 0; i <= rows; i++) {
+      grid.push(seats.slice(i * cols, (i + 1) * cols));
     }
-  }, [seats, screenRoomDetail]);
+    return grid;
+  };
 
   return (
     <div className="container">
@@ -61,53 +60,59 @@ export default function AdminScreenRoomDetail() {
         <p className="m-auto text-2xl text-white">Projection Screen</p>
       </div>
 
-      <div
-        className={`grid grid-cols-${cols} gap-x-[10px] gap-y-[10px] pl-[150px] py-[50px] mx-auto`}
-      >
-        {seatStandards.map((seat) => (
-          <div key={seat.id} className="seat w-full">
-            <input
-              type="checkbox"
-              checked={!seat.status}
-              value={seat.id}
-              name="seatId"
-              id={`seat-${seat.id}`}
-              onChange={() => changeStatusSeat(seat.id)}
-            />
-            <label htmlFor={`seat-${seat.id}`}>{seat.seatName}</label>
+      {screenRoomDetail && (
+        <div className="booking-section">
+         
+          <div className="seat-map">
+            {seatGrid().map((row, rowIndex) => (
+              <div key={rowIndex} className="seat-row" style={{ display: 'flex' }}>
+                {row.map((seat) => (
+                  <button
+                    key={seat.id}
+                    onClick={() => toggleSeat(seat)}
+                    className={`seat ${selectedSeats.includes(seat.id) ? 'selected' : ''}`}
+                    style={{
+                      margin: '2px',
+                      backgroundColor: seat.typeSeat === "STANDARD" ? (seat.status ? '#f0f0f0' : 'black') : (seat.status ? 'pink' : 'black'),
+                      color: 'black',
+                      padding: '10px',
+                      border: 'none',
+                      borderRadius: '5px',
+                      cursor: 'pointer',
+                      width : "40px",
+                      height : "40px"
+                    }}
+                  >
+                    {seat.seatName}
+                  </button>
+                ))}
+              </div>
+            ))}
           </div>
-        ))}
+         
+        </div>
+      )}
 
-        {seatSweetBoxs.map((seat) => (
-          <div key={seat.id} className="seat !bg-pink-500">
-            <input
-              type="checkbox"
-              checked={!seat.status}
-              value={seat.id}
-              name="seatId"
-              id={`seat-${seat.id}`}
-              onChange={() => changeStatusSeat(seat.id)}
-            />
-            <label htmlFor={`seat-${seat.id}`}>{seat.seatName}</label>
-          </div>
-        ))}
-      </div>
+      <div className="flex justify-between mt-10">
 
       <div className="flex justify-start gap-x-10">
         <div className="flex gap-4 items-center">
           <div className="bg-black w-10 h-10"></div>
           <p className="font-bold">Block Seat</p>
         </div>
-
         <div className="flex gap-4 items-center">
           <div className="bg-pink-500 w-10 h-10"></div>
           <p className="font-bold">SweetBox Seat</p>
         </div>
-
         <div className="flex gap-4 items-center">
-          <div className="bg-white border border-[#007bff] w-10 h-10"></div>
+          <div className="bg-[rgb(240, 240, 240);] border border-[#007bff] w-10 h-10"></div>
           <p className="font-bold">Standard Seat</p>
         </div>
+      </div>
+
+      <div>
+        <Button onClick={handleSaveData} className="w-[100px] h-[40px]" type="primary">Save</Button>
+      </div>
       </div>
     </div>
   );

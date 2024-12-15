@@ -1,49 +1,39 @@
 import baseUrl from "../apis/instance";
 
 export const fetchAllShowTime = async (
-  page = 0,
-  size = 5,
-  search = "",
-  showDate = "",
-  theaterId = "",
-  movieId = "",
-  screenRoomId = ""
+  movieId,
+  theaterId,
+  screenRoomId,
+  showTimeId
 ) => {
-  let url = `/api.myService.com/v1/admin/showTimes`;
-  let params = [];
-  if (page) {
-    params.push(`page=${page}`);
-  }
+  // let url = `/api.myService.com/v1/admin/showTimes`;
+  // let params = [];
 
-  if (size) {
-    params.push(`size=${size}`);
-  }
+  // if (movieId) {
+  //   params.push(`movieId=${movieId}`);
+  // }
 
-  if (search) {
-    params.push(`search=${encodeURIComponent(search)}`); // Mã hóa tham số search
-  }
+  // if (theaterId) {
+  //   params.push(`theaterId=${theaterId}`);
+  // }
 
-  if (showDate) {
-    params.push(`showDate=${encodeURIComponent(showDate)}`);
-  }
+  // if (screenRoomId) {
+  //   params.push(`screenRoomId=${screenRoomId}`);
+  // }
 
-  if (theaterId) {
-    params.push(`theaterId=${theaterId}`);
-  }
+  // if (showTimeId) {
+  //   params.push(`showTimeId=${showTimeId}`);
+  // }
 
-  if (movieId) {
-    params.push(`movieId=${movieId}`);
-  }
+  // if (params.length > 0) {
+  //   url += `?${params.join("&")}`;
+  // }
 
-  if (screenRoomId) {
-    params.push(`screenRoomId=${screenRoomId}`);
-  }
-
-  if (params.length > 0) {
-    url += `?${params.join("&")}`;
-  }
-
+  // const response = await baseUrl.get(url);
+  // console.log(url);
+  const url = `/api.myService.com/v1/admin/showTimes?movieId=${movieId}&theaterId=${theaterId}&screenRoomId=${screenRoomId}&showTimeId=${showTimeId}`;
   const response = await baseUrl.get(url);
+  console.log(url);
   return response.data;
 };
 
@@ -76,4 +66,19 @@ export const getMovieByMonth = async () => {
     "/api.myService.com/v1/admin/movies/getMovieByMonth"
   );
   return response.data;
+
 };
+
+export const getShowTimeByScreenRoom = async (screenRoomId) => {
+  const response = await baseUrl.get(
+    `/api.myService.com/v1/admin/showTimes/getShowTimeByScreenRoom/${screenRoomId}`
+  );
+  return response.data;
+};
+
+export const getShowTimeByMovieAndDate = async (movieId, date) => {
+  
+  const localDateString = date.toISOString().split('T')[0];
+  const response = await baseUrl.get(`/api.myService.com/v1/admin/showTimes/getShowTimeByMovieAndDate?movieId=${movieId}&date=${localDateString}`);
+  return response.data;
+}

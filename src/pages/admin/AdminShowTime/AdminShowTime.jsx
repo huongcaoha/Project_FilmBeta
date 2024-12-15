@@ -7,9 +7,13 @@ import {
   deleteShowTime,
   fetchAllShowTime,
   getMovieByMonth,
+  getShowTimeByScreenRoom,
   updateShowTime,
 } from "../../../services/showTime";
-import { fetchAllTheater } from "../../../services/theaterService";
+import {
+  fetchAllTheater,
+  getListTheaters,
+} from "../../../services/theaterService";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { getAllScreen, getScreenByTheater } from "../../../services/screenRoom";
 
@@ -24,12 +28,13 @@ export default function AdminShowTime() {
   const [isUpdate, setIsUpdate] = useState(false);
   const [idUpdate, setIdUpdate] = useState(null);
   const [theaters, setTheaters] = useState([]);
-  const [showDate, setShowDate] = useState("");
-  const [theaterId, setTheaterId] = useState("");
-  const [movieId, setMovieId] = useState("");
-  const [screenRoomId, setScreenRoomId] = useState("");
   const [screenRooms, setScreenRooms] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState({
+    movieId: "",
+    theaterId: "",
+    screenRoomId: "",
+    showTimeId: "",
+  });
   const [movies, setMovies] = useState([]);
   const [showTime, setShowTime] = useState({
     movieId: "",
@@ -46,6 +51,11 @@ export default function AdminShowTime() {
     screenRoomId: "",
   });
 
+  const [searchMovies, setSearchMovies] = useState([]);
+  const [searchTheaters, setSearchTheaters] = useState([]);
+  const [searchScreenRooms, setSearchScreenRooms] = useState([]);
+  const [searchShowTimes, setSearchShowTimes] = useState([]);
+
   const getScreenByTheaterId = async () => {
     try {
       const response = await getScreenByTheater(Number(showTime.theaterId));
@@ -53,14 +63,53 @@ export default function AdminShowTime() {
     } catch (error) {}
   };
 
+  const getMovies = async () => {
+    try {
+      const response = await getMovieByMonth();
+      setSearchMovies(response);
+    } catch (error) {}
+  };
+
+  const getTheaters = async () => {
+    try {
+      const response = await getListTheaters();
+      setSearchTheaters(response);
+    } catch (error) {}
+  };
+
+  const getScreenRooms = async () => {
+    if (search.theaterId) {
+      try {
+        const response = await getScreenByTheater(search.theaterId);
+        setSearchScreenRooms(response);
+      } catch (error) {}
+    }
+  };
+
+  const getShowTimes = async () => {
+    if (search.screenRoomId) {
+      try {
+        const response = await getShowTimeByScreenRoom(search.screenRoomId);
+        setSearchShowTimes(response);
+      } catch (error) {}
+    }
+  };
+
+  useEffect(() => {
+    fetchShowTimes();
+    getMovies();
+    getTheaters();
+    getScreenRooms();
+    getShowTimes();
+  }, [search]);
+
   const fetchShowTimes = async () => {
     try {
       const response = await fetchAllShowTime(
-        currentPage - 1,
-        showDate,
-        theaterId,
-        movieId,
-        screenRoomId
+        search.movieId,
+        search.theaterId,
+        search.screenRoomId,
+        search.showTimeId
       );
 
       setShowTimes(response.showTimes);
@@ -96,15 +145,7 @@ export default function AdminShowTime() {
     getMovie();
     fetchTheater();
     getScreenByTheaterId();
-  }, [
-    currentPage,
-    useDebounceSearch,
-    showTime.theaterId,
-    showDate,
-    theaterId,
-    movieId,
-    screenRoomId,
-  ]);
+  }, [currentPage, useDebounceSearch, showTime.theaterId, search]);
 
   const handleOnsubmitSearch = (e) => {
     e.preventDefault();
@@ -239,7 +280,7 @@ export default function AdminShowTime() {
             message.error("show time name existed");
           }
         } catch (err) {
-          setError({ ...error, showTime: err.response.data });
+          // setError({ ...error, showTime: err.response.data });
           message.error("Show time existed or time must be future or present");
         }
       } else {
@@ -250,14 +291,22 @@ export default function AdminShowTime() {
             setIsShowForm(false);
             fetchShowTimes();
           } else {
-            message.error(
-              "Show time existed or time must be future or present"
-            );
-            setError({ ...error, showTime: err.response.data });
+            // message.error(
+            //   "Show time existed or time must be future or present"
+            // );
+            setError({
+              ...error,
+              showTime: err?.response?.data.message.showTime,
+            });
           }
         } catch (err) {
-          setError({ ...error, showTime: err.response.data });
-          message.error("Show time existed or time must be future or present");
+          console.log("Error: ", err);
+
+          setError({
+            ...error,
+            showTime: err?.response?.data.message.showTime,
+          });
+          // message.error("Show time existed or time must be future or present");
         }
       }
     }
@@ -356,64 +405,76 @@ export default function AdminShowTime() {
           </Button>
         </div>
 
-        <div className=" flex justify-end gap-5 m-[50px]">
-          <div>
-            <label className="mr-4">Movie Name :</label>
-            <select
-              value={movieId}
-              name="movieId"
-              onChange={(e) => setMovieId(Number(e.target.value))}
-            >
-              <option value={""}>Select Movie</option>
-              {movies?.map((movie) => (
-                <option key={movie.id} value={movie.id}>
-                  {movie.movieName}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="m-10 flex justify-end">
+          <Select
+            value={search.movieId}
+            style={{ width: 200 }}
+            onChange={(value) => {
+              return setSearch({ ...search, movieId: value });
+            }} // Bắt sự kiện thay đổi
+          >
+            <Option value="">Search Movie</Option>
+            {searchMovies.map((movie, index) => (
+              <Option key={index} value={movie.id}>
+                {movie.movieName}
+              </Option>
+            ))}
+          </Select>
 
-          <div className="flex">
-            <label className="mr-3">Show Time :</label>
-            <Input
-              type="date"
-              value={showDate}
-              name="showDate"
-              onChange={(e) => setShowDate(e.target.value)}
-            ></Input>
-          </div>
+          <Select
+            value={search.theaterId}
+            style={{ width: 200 }}
+            onChange={(value) => {
+              const newSearch = {
+                ...search,
+                theaterId: value,
+                screenRoomId: "",
+                showTimeId: "",
+              };
+              return setSearch(newSearch);
+            }}
+          >
+            <Option value="">Search Theater</Option>
+            {searchTheaters.map((theater, index) => (
+              <Option key={index} value={theater.id}>
+                {theater.name}
+              </Option>
+            ))}
+          </Select>
 
-          <div>
-            <label className="mr-4">Theater :</label>
-            <select
-              value={theaterId}
-              name="theaterId"
-              onChange={(e) => setValueTheaterId(e)}
-            >
-              <option value={""}>Select Theater</option>
-              {theaters?.map((theater) => (
-                <option key={theater.id} value={theater.id}>
-                  {theater.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            value={search.screenRoomId}
+            style={{ width: 200 }}
+            onChange={(value) => {
+              return setSearch({
+                ...search,
+                screenRoomId: value,
+                showTimeId: "",
+              });
+            }}
+          >
+            <Option value="">Search Screen</Option>
+            {searchScreenRooms.map((screenRoom, index) => (
+              <Option key={index} value={screenRoom.id}>
+                {screenRoom.screenName}
+              </Option>
+            ))}
+          </Select>
 
-          <div>
-            <label className="mr-4">Screen Room :</label>
-            <select
-              value={screenRoomId}
-              name="screenRoomId"
-              onChange={(e) => setScreenRoomId(Number(e.target.value))}
-            >
-              <option value={""}>Select Screen Room</option>
-              {screenRooms?.map((screenRoom) => (
-                <option key={screenRoom.id} value={screenRoom.id}>
-                  {screenRoom.screenName}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            value={search.showTimeId}
+            style={{ width: 200 }}
+            onChange={(value) => {
+              setSearch({ ...search, showTimeId: value });
+            }}
+          >
+            <Option value="">Search Show Time</Option>
+            {searchShowTimes.map((showTime, index) => (
+              <Option key={index} value={showTime.id}>
+                {showTime.showTime}
+              </Option>
+            ))}
+          </Select>
         </div>
 
         <Table
