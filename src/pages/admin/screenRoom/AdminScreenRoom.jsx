@@ -12,8 +12,12 @@ import { useDebounce } from "../../../hooks/useDebounce";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { saveScreenRoom } from "../../../redux/slices/screenRoomData";
+import { useCookies } from "react-cookie";
 
 export default function AdminScreenRoom() {
+  const [cookies, setCookie, removeCookie] = useCookies([
+    "adminShowRoomDetail",
+  ]);
   const [screenRooms, setScreenRooms] = useState([]);
   const [isShowForm, setIsShowForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -237,7 +241,7 @@ export default function AdminScreenRoom() {
   };
 
   const handleViewDetail = (screenRoom) => {
-    dispath(saveScreenRoom(screenRoom));
+    setCookie("adminShowRoomDetail", screenRoom, { path: "/" });
   };
 
   const handleDeleteScreen = async () => {

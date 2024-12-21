@@ -11,7 +11,15 @@ import AdminScreenRoom from "../pages/admin/screenRoom/AdminScreenRoom";
 import AdminScreenRoomDetail from "../pages/admin/screenRoom/AdminScreenRoomDetail";
 import AdminShowTime from "../pages/admin/adminShowTime/AdminShowTime";
 import AdminBooking from "../pages/admin/adminBooking/AdminBooking";
+import CommentManager from "../pages/admin/CommentManager";
+
+import AdminUserManager from "../pages/admin/AdminUserManager";
+import BannerManager from "../pages/admin/BannerManager";
+
 import BookingTicket from "../pages/user/BookingTicket";
+import ComboFood from "../pages/admin/food/ComboFood";
+import Payment from "../pages/user/Payment";
+import GiftPage from "../pages/user/GiftPage";
 
 const contentStyle = {
   padding: 50,
@@ -89,6 +97,54 @@ const protectedRouter = [
           </LazyLoad>
         ),
       },
+      {
+        path: "news",
+        element: (
+          <LazyLoad>
+            <NewsManager />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "movie",
+        element: (
+          <LazyLoad>
+            <MovieManager />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "comment",
+        element: (
+          <LazyLoad>
+            <CommentManager />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "banners",
+        element: (
+          <LazyLoad>
+            <BannerManager />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "users",
+        element: (
+          <LazyLoad>
+            <AdminUserManager />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "foods",
+        element: (
+          <LazyLoad>
+            <ComboFood />
+          </LazyLoad>
+        ),
+      },
     ],
   },
   {
@@ -100,6 +156,23 @@ const protectedRouter = [
         element: (
           <LazyLoad>
             <BookingTicket />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "payment",
+        element: (
+          <LazyLoad>
+            <Payment />
+          </LazyLoad>
+        ),
+      },
+
+      {
+        path: "gifts",
+        element: (
+          <LazyLoad>
+            <GiftPage />,
           </LazyLoad>
         ),
       },

@@ -1,41 +1,19 @@
+import moment from "moment";
 import baseUrl from "../apis/instance";
+import { da } from "date-fns/locale";
 
 export const fetchAllBookings = async (
   page = 0,
-  size = 5,
+  date ,
   movieId,
   theaterId,
   screenRoomId,
   showTimeId
 ) => {
-  let url = `/api.myService.com/v1/admin/bookings`;
-  const params = [];
-  if (page) {
-    params.push(`page=${page}`);
-  }
-
-  if (size) {
-    params.push(`size=${size}`);
-  }
-  if (movieId) {
-    params.push(`movieId=${encodeURIComponent(search.movieId)}`);
-  }
-  if (theaterId) {
-    params.push(`theaterId=${encodeURIComponent(search.theaterId)}`);
-  }
-  if (screenRoomId) {
-    params.push(`screenRoomId=${encodeURIComponent(search.screenRoomId)}`);
-  }
-  if (showTimeId) {
-    params.push(`showTimeId=${encodeURIComponent(search.showTimeId)}`);
-  }
-
-  // Nếu có tham số, thêm chúng vào URL
-  if (params.length > 0) {
-    url += `?${params.join("&")}`;
-  }
-
+ 
+  let url = `/api.myService.com/v1/admin/bookings?page=${page}&date=${date}&movieId=${movieId}&theaterId=${theaterId}&screenRoomId=${screenRoomId}&showTimeId=${showTimeId}`;
   const response = await baseUrl.get(url);
+  
   return response.data;
 };
 
@@ -43,6 +21,33 @@ export const getBookingSeatById = async (bookingId) => {
   const response = await baseUrl.get(
     `/api.myService.com/v1/admin/bookingSeats/${bookingId}`
   );
-  console.log(response.data);
+
   return response.data;
 };
+
+export const handleBooking = async (showTimeId ,listSeatId,totalPriceFood ,foodBookingRequests) => {
+  const response = await baseUrl.post("/api.myService.com/v1/bookings",{
+    showTimeId : showTimeId,
+    listSeatId : listSeatId ,
+    totalPriceFood : totalPriceFood,
+    foodBookingRequests : foodBookingRequests
+  });
+  return response.data ;
+}
+
+export const getMoneyBySeats = async (showTimeId , seatIds) => {
+    const response = await baseUrl.get(`/api.myService.com/v1/bookings/getMoneyBySeat?showTimeId=${showTimeId}&seatIds=${seatIds}`);
+    
+    return response.data ;
+  
+}
+
+export const getUser = async () => {
+  const response = await baseUrl.get("/api.myService.com/v1/user/account/getUser");
+  return response.data;
+}
+
+export const seatToMoney = async (seatId ,showTimeId) => {
+  const response = await baseUrl.get(`/api.myService.com/v1/bookings/getPriceOfSeat/seatId/${seatId}/showTimeId/${showTimeId}`);
+  return response.data ;
+}

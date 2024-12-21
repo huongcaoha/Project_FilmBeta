@@ -13,6 +13,7 @@ const handleAddInterceptors = (instance) => {
     (config) => {
       const cookie = new Cookies();
       const data = cookie.get("data");
+
       if (data) {
         config.headers.Authorization = `Bearer ${data.accessToken}`;
       }

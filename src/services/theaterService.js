@@ -1,7 +1,7 @@
 import baseUrl from "../apis/instance";
 
 export const fetchAllTheater = async (page = 0, size = 5, search = "") => {
-  let url = `/api.myService.com/v1/admin/theaters`;
+  let url = `/api.myService.com/v1/theaters`;
   const params = [];
   if (page) {
     params.push(`page=${page}`);
@@ -35,7 +35,7 @@ export const checkNameExist = async (name) => {
 };
 
 export const getCity = async () => {
-  const response = await baseUrl.get("/api.myService.com/v1/admin/city");
+  const response = await baseUrl.get("/api.myService.com/v1/city");
   return response.data;
 };
 
@@ -56,7 +56,15 @@ export const updateTheater = async (theater, id) => {
 
 export const getListTheaters = async () => {
   const response = await baseUrl.get(
-    "/api.myService.com/v1/admin/theaters/getTheaters"
+    "/api.myService.com/v1/theaters/getTheaters"
   );
+  return response.data;
+};
+
+export const getTheaterByCityName = async (cityName) => {
+  const response = await baseUrl.get(
+    `/api.myService.com/v1/theaters/getTheaterByCity?cityName=${cityName}`
+  );
+
   return response.data;
 };

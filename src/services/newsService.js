@@ -29,3 +29,19 @@ export const deleteNews = async (id) => {
   );
   return response;
 };
+
+//Phần user và permit All
+
+export const fetchAllNewsPermitAll = async () => {
+  const response = await baseUrl.get("api.myService.com/v1/permit_all/news");
+
+  return response.data;
+};
+
+//Chi tiết tin tức
+export const fetchNewsDetail = async (newsId) => {
+  const response = await baseUrl.get(
+    `api.myService.com/v1/permit_all/news/${newsId}`
+  );
+  return response.data;
+};

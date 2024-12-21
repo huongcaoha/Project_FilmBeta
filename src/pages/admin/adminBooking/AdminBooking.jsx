@@ -14,6 +14,8 @@ import {
 import baseUrl from "../../../apis/instance";
 import { getListTheaters } from "../../../services/theaterService";
 import { getScreenByTheater } from "../../../services/screenRoom";
+import moment from "moment";
+import AdminBookingDetail from "./AdminBookingDetail";
 
 export default function AdminBooking() {
   const [bookings, setBookings] = useState([]);
@@ -23,11 +25,13 @@ export default function AdminBooking() {
   const [formDetail, setFormDetail] = useState(false);
   const [bookingSeats, setBookingSeats] = useState([]);
   const [bookingId, setBookingId] = useState("");
+  const [bookingDetail, setBookingDetail] = useState({});
   const [search, setSearch] = useState({
     movieId: "",
     theaterId: "",
     screenRoomId: "",
     showTimeId: "",
+    date: "",
   });
   const [movies, setMovies] = useState([]);
   const [theaters, setTheaters] = useState([]);
@@ -38,7 +42,7 @@ export default function AdminBooking() {
     try {
       const response = await fetchAllBookings(
         currentPage - 1,
-        5,
+        search.date,
         search.movieId,
         search.theaterId,
         search.screenRoomId,
@@ -121,6 +125,7 @@ export default function AdminBooking() {
   const handleOpenDetail = (record) => {
     setFormDetail(true);
     setBookingId(record.id);
+    setBookingDetail(record);
   };
 
   const columnBookingDetail = [
@@ -160,7 +165,8 @@ export default function AdminBooking() {
     {
       title: "Show Time",
       key: "address",
-      render: (_, record) => record.showTime.showTime,
+      render: (_, record) =>
+        moment(record.showTime.showTime).format("YYYY-MM-DD hh:mm:ss"),
     },
     {
       title: "User",
@@ -201,6 +207,15 @@ export default function AdminBooking() {
 
       <div className="px-[150px] py-[50px]">
         <div className="m-10 flex justify-end">
+          <Input
+            value={search.date}
+            type="date"
+            style={{ width: 200 }}
+            onChange={(value) => {
+              // console.log("date =>> ", value.target.value);
+              return setSearch({ ...search, date: value.target.value });
+            }} // Bắt sự kiện thay đổi
+          ></Input>
           <Select
             value={search.movieId}
             style={{ width: 200 }}
@@ -284,22 +299,14 @@ export default function AdminBooking() {
         />
 
         <div>
-          <Modal
-            title="Booking Detail"
-            open={formDetail}
-            onCancel={handleCloseDetail}
-            footer={false}
-          >
-            <Table
-              dataSource={bookingSeats}
-              columns={columnBookingDetail}
-              pagination={{
-                current: currentPage,
-                pageSize: 5,
-                total: totalPage * 5,
-                onChange: handleChangePage,
-              }}
-            />
+          <Modal open={formDetail} onCancel={handleCloseDetail} footer={false}>
+            {bookingDetail ? (
+              <AdminBookingDetail
+                bookingDetail={bookingDetail}
+              ></AdminBookingDetail>
+            ) : (
+              <></>
+            )}
           </Modal>
         </div>
       </div>

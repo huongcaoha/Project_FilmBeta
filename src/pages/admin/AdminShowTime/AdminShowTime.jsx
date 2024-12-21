@@ -6,6 +6,7 @@ import {
   createShowTime,
   deleteShowTime,
   fetchAllShowTime,
+  findMovieById,
   getMovieByMonth,
   getShowTimeByScreenRoom,
   updateShowTime,
@@ -16,6 +17,7 @@ import {
 } from "../../../services/theaterService";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { getAllScreen, getScreenByTheater } from "../../../services/screenRoom";
+import moment from "moment";
 
 export default function AdminShowTime() {
   const [showTimes, setShowTimes] = useState([]);
@@ -43,6 +45,7 @@ export default function AdminShowTime() {
     theaterId: "",
     screenRoomId: "",
   });
+
   const [error, setError] = useState({
     movieId: "",
     showTime: "",
@@ -62,6 +65,8 @@ export default function AdminShowTime() {
       setScreenRooms(response);
     } catch (error) {}
   };
+
+  //---------------------------------
 
   const getMovies = async () => {
     try {
@@ -95,17 +100,10 @@ export default function AdminShowTime() {
     }
   };
 
-  useEffect(() => {
-    fetchShowTimes();
-    getMovies();
-    getTheaters();
-    getScreenRooms();
-    getShowTimes();
-  }, [search]);
-
   const fetchShowTimes = async () => {
     try {
       const response = await fetchAllShowTime(
+        currentPage - 1,
         search.movieId,
         search.theaterId,
         search.screenRoomId,
@@ -118,6 +116,19 @@ export default function AdminShowTime() {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    fetchShowTimes();
+    getMovies();
+    getTheaters();
+    getScreenRooms();
+    getShowTimes();
+  }, [
+    search.movieId,
+    search.theaterId,
+    search.showTimeId,
+    search.screenRoomId,
+  ]);
 
   const fetchTheater = async () => {
     try {
@@ -147,14 +158,13 @@ export default function AdminShowTime() {
     getScreenByTheaterId();
   }, [currentPage, useDebounceSearch, showTime.theaterId, search]);
 
-  const handleOnsubmitSearch = (e) => {
-    e.preventDefault();
-    fetchShowTimes(search);
-  };
-
-  const setValueTheaterId = (e) => {
-    setTheaterId(Number(e.target.value));
-    getScreenByTheaterId(Number(e.target.value));
+  const handleSearchMovie = (value) => {
+    setSearch({
+      movieId: value,
+      theaterId: "",
+      screenRoomId: "",
+      showTimeId: "",
+    });
   };
 
   const handleOpenForm = () => {
@@ -226,7 +236,11 @@ export default function AdminShowTime() {
 
   const checkFormValid = (e) => {
     const { name, value } = e.target;
+    console.log("Value: ", value);
+    console.log("name: ", name);
+
     const newShowTime = { ...showTime, [name]: value };
+
     setShowTime(newShowTime);
     if (!value) {
       const newError = { ...error, [name]: name + " can not blank" };
@@ -239,6 +253,10 @@ export default function AdminShowTime() {
     if (name === "theaterId") {
       getScreenByTheaterId(Number(value));
     }
+  };
+
+  const getMovieById = async () => {
+    return await findMovieById(showTime.movieId);
   };
 
   const handelOpenFormUpdate = (showTime) => {
@@ -262,33 +280,59 @@ export default function AdminShowTime() {
     if (!isFormValid) {
       message.error("Create error");
     } else {
+      const dateTime = e.target.showTime.value;
+      let momentDate = moment(dateTime);
+      const hour = momentDate.hours(); // Lấy giờ
+      if (hour === 0) {
+        momentDate = momentDate.add(12, "hours").format("YYYY-MM-DD HH:mm:ss");
+      } else {
+        momentDate = e.target.showTime.value;
+      }
       const showTime = {
         movieId: Number(e.target.movieId.value),
         screenRoomId: Number(e.target.screenRoomId.value),
-        showTime: e.target.showTime.value,
+        showTime: momentDate,
         typeMovie: e.target.typeMovie.value,
         theaterId: Number(e.target.theaterId.value),
       };
+
+      const movie = getMovieById(showTime.movieId);
       if (isUpdate) {
-        try {
-          const response = await updateShowTime(showTime, idUpdate);
-          if (response) {
-            message.success("Update show time success");
-            handleCloseForm();
-            fetchShowTimes();
-          } else {
-            message.error("show time name existed");
+        if (showTime.showTime < movie.releaseDate) {
+          message.error(
+            "Showtime must be greater than or equal to release date"
+          );
+        } else {
+          try {
+            const response = await updateShowTime(showTime, idUpdate);
+            if (response) {
+              message.success("Update show time success");
+              handleCloseForm();
+              fetchShowTimes();
+            } else {
+              message.error("show time name existed");
+            }
+          } catch (err) {
+            // setError({
+            //   ...error,
+            //   showTime: err?.response?.data.message.showTime,
+            // });
+            message.error(
+              "Show time existed or time must be future or present"
+            );
           }
-        } catch (err) {
-          setError({ ...error,  showTime: err?.response?.data.message.showTime});
-          message.error("Show time existed or time must be future or present");
         }
       } else {
         try {
+          console.log(
+            "showTime: ",
+            moment(showTime).format("YYYY-MM-DD hh:mm:ss A")
+          );
+
           const response = await createShowTime(showTime);
           if (response) {
             message.success("create show time success");
-            setIsShowForm(false);
+            handleCloseForm();
             fetchShowTimes();
           } else {
             message.error(
@@ -409,9 +453,7 @@ export default function AdminShowTime() {
           <Select
             value={search.movieId}
             style={{ width: 200 }}
-            onChange={(value) => {
-              return setSearch({ ...search, movieId: value });
-            }} // Bắt sự kiện thay đổi
+            onChange={(value) => handleSearchMovie(value)}
           >
             <Option value="">Search Movie</Option>
             {searchMovies.map((movie, index) => (
@@ -461,7 +503,7 @@ export default function AdminShowTime() {
             ))}
           </Select>
 
-          <Select
+          {/* <Select
             value={search.showTimeId}
             style={{ width: 200 }}
             onChange={(value) => {
@@ -474,7 +516,7 @@ export default function AdminShowTime() {
                 {showTime.showTime}
               </Option>
             ))}
-          </Select>
+          </Select> */}
         </div>
 
         <Table
