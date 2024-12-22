@@ -5,6 +5,7 @@ import {
   DashboardOutlined,
   FieldTimeOutlined,
   FileSearchOutlined,
+  GiftOutlined,
   HomeOutlined,
   InsertRowLeftOutlined,
   MailOutlined,
@@ -122,6 +123,15 @@ const items = [
     label: (
       <Link to={"/admin/foods"} className="text-base font-semibold mb-5">
         Combo Food
+      </Link>
+    ),
+  },
+  {
+    key: "13",
+    icon: <GiftOutlined style={{ fontSize: "20px" }} />,
+    label: (
+      <Link to={"/admin/gifts"} className="text-base font-semibold mb-5">
+        Gift
       </Link>
     ),
   },

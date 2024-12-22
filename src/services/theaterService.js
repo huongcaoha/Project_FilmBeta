@@ -19,7 +19,8 @@ export const fetchAllTheater = async (page = 0, size = 5, search = "") => {
     url += `?${params.join("&")}`;
   }
 
-  return await baseUrl.get(url);
+  const response = baseUrl.get(url);
+  return response ;
 };
 
 export const createTheater = async (theater) => {
@@ -27,7 +28,6 @@ export const createTheater = async (theater) => {
 };
 
 export const checkNameExist = async (name) => {
-  console.log(name);
   const response = await baseUrl.get(
     `/api.myService.com/v1/admin/theaters/checkNameExist/${name}`
   );

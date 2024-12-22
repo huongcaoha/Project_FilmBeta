@@ -16,7 +16,7 @@ import { getUser, handleBooking } from "../../services/booking";
 import { current } from "@reduxjs/toolkit";
 import { useNavigate } from "react-router-dom";
 import QRCode from "react-qr-code";
-import { getGiftUser, useGift } from "../../services/giftService";
+import { getGiftUser, useCoinUser, useGift } from "../../services/giftService";
 
 export default function Payment() {
   const [comboFoods, setComboFoods] = useState([]);
@@ -159,6 +159,10 @@ export default function Payment() {
     const response = await useGift(giftSelectedId);
   };
 
+  const updateCoin = async () => {
+    const response = await useCoinUser();
+  };
+
   const handlePayment = async () => {
     // const cookie = new Cookies();
     // const data = cookie.get("data");
@@ -171,31 +175,31 @@ export default function Payment() {
         };
       });
     const listSeatId = selectedSeats.map((seat) => seat.id);
-    const totalMoneyFood = 0;
-    if (useCoin) {
-      totalMoneyFood =
-        comboFoods
-          .map((food) => food.quantity * food.price)
-          .reduce((pre, current) => pre + current, 0) - coin;
-    } else {
-      totalMoneyFood = comboFoods
-        .map((food) => food.quantity * food.price)
-        .reduce((pre, current) => pre + current, 0);
-    }
+    let totalMoneyFood = comboFoods
+      .map((food) => food.quantity * food.price)
+      .reduce((pre, current) => pre + current, 0);
+
+    const discount = useCoin ? coin : 0;
     const response = await handleBooking(
       showTimeDetail.id,
       listSeatId,
       totalMoneyFood,
       listFood,
-      giftSelectedId
+      giftSelectedId,
+      discount
     );
 
     if (
       (typeof response === "string" && response.trim()) ||
       (typeof response === "object" && response)
     ) {
-      if (giftSelectedId !== 0) {
+      if (giftSelectedId) {
         useGiftUser();
+      }
+      console.log(giftSelectedId);
+
+      if (useCoin) {
+        updateCoin();
       }
       message.success("Payment successfully ! Thanks you so much ");
       setUuid(response.serial_number);
@@ -282,7 +286,7 @@ export default function Payment() {
           >
             <Option value={0}>Chọn quà tặng</Option>
             {userGifts.map((gift) => (
-              <Option value={gift.gift.id}>
+              <Option value={gift.id}>
                 <div className="flex justify-between items-center px-[50px]">
                   <img className="w-12 h-12" src={gift.gift.image} alt="" />
                   <p>{gift.gift.giftName}</p>

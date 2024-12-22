@@ -10,6 +10,7 @@ import QRCode from "react-qr-code";
 import { getUser } from "../../../services/booking";
 import { getListSeatByBookingId } from "../../../services/seatService";
 import { getFoodByBookingId } from "../../../services/comboFood";
+import { getGiftUserById } from "../../../services/giftService";
 
 export default function AdminBookingDetail({ bookingDetail }) {
   const [comboFoods, setComboFoods] = useState([]);
@@ -22,7 +23,7 @@ export default function AdminBookingDetail({ bookingDetail }) {
   // ]); // Khai báo cookies
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [user, setUser] = useState(bookingDetail.user);
-
+  const [giftUser, setGiftUser] = useState(bookingDetail.gift);
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -34,6 +35,10 @@ export default function AdminBookingDetail({ bookingDetail }) {
     const response = await getListSeatByBookingId(bookingDetail.id);
     setSelectedSeats(response);
   };
+
+  // const fetchGiftUser = async () => {
+  //   const response = await getGiftUserById(bookingDetail.)
+  // }
 
   const fetchFoodByBookingId = async () => {
     const response = await getFoodByBookingId(bookingDetail.id);
@@ -51,8 +56,6 @@ export default function AdminBookingDetail({ bookingDetail }) {
   const seatDouble = selectedSeats?.filter(
     (seat) => seat.seat.typeSeat === "DOUBLE"
   );
-
-  console.log(selectedSeats);
 
   const totalMoneySeat = selectedSeats
     .map((seat) => seat.price)
@@ -161,7 +164,18 @@ export default function AdminBookingDetail({ bookingDetail }) {
           <h3 className="font-bold">COMBO FOOD</h3>
           <Table columns={columns} dataSource={comboFoods} pagination={false} />
         </div>
-        <div></div>
+
+        {giftUser ? (
+          <div>
+            <h3 className="font-bold">GIFT</h3>
+            <div className="flex justify-between items-center px-[50px]">
+              <img className="w-12 h-12" src={giftUser?.image} alt="" />
+              <p>{giftUser?.giftName}</p>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
 
         <div className="flex justify-between mt-4">
           <span>Tổng tiền vé :</span>
@@ -172,8 +186,16 @@ export default function AdminBookingDetail({ bookingDetail }) {
           <span>{formatCurrency(totalMoneyFood)}</span>
         </div>
         <div className="flex justify-between">
+          <span>Giảm giá : </span>
+          <span>{formatCurrency(bookingDetail.discount)}</span>
+        </div>
+        <div className="flex justify-between">
           <span>Số tiền cần thanh toán:</span>
-          <span>{formatCurrency(totalMoneyFood + totalMoneySeat)}</span>
+          <span>
+            {formatCurrency(
+              totalMoneyFood + totalMoneySeat - bookingDetail.discount
+            )}
+          </span>
         </div>
 
         <div className="flex justify-center p-3"></div>

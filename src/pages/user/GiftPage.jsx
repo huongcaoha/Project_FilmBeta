@@ -73,6 +73,21 @@ export default function GiftPage() {
   return (
     <div>
       <div className="relative">
+        <div className="absolute bottom-[250px] left-[43%]">
+          {checkReceiveGift ? (
+            <img
+              className="w-[300px] h-[300px]"
+              src="https://res.cloudinary.com/dudtrotnp/image/upload/v1734876096/pngtree-d-open-gift-box-with-rays-yellow-red-ribbon-suitable-for-png-image_14409896_oqozgp.png"
+              alt="gift"
+            />
+          ) : (
+            <img
+              className="w-[300px] h-[300px]"
+              src="https://cdn.pixabay.com/animation/2023/11/29/03/39/03-39-03-19_512.gif"
+              alt="gift"
+            />
+          )}
+        </div>
         <div className="absolute top-[40px] left-[50px]">
           <img
             className="bg-[white] rounded-2xl"

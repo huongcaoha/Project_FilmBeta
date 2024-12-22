@@ -156,6 +156,13 @@ export default function AdminBooking() {
     },
   ];
 
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  };
+
   const columns = [
     {
       title: "STT",
@@ -163,10 +170,9 @@ export default function AdminBooking() {
       render: (_, __, index) => (currentPage - 1) * 5 + index + 1, // Lấy chỉ số và cộng thêm 1
     },
     {
-      title: "Show Time",
-      key: "address",
-      render: (_, record) =>
-        moment(record.showTime.showTime).format("YYYY-MM-DD hh:mm:ss"),
+      title: "Date Booking",
+      key: "dateBookiong",
+      render: (_, record) => moment(record.created_at).format("YYYY-MM-DD"),
     },
     {
       title: "User",
@@ -179,14 +185,27 @@ export default function AdminBooking() {
       render: (_, record) => record.totalSeat,
     },
     {
-      title: "Total Price Movie",
-      key: "totalPriceMovie",
-      render: (_, record) => record.totalPriceMovie,
+      title: "Show Time",
+      key: "address",
+      render: (_, record) =>
+        moment(record.showTime.showTime).format("YYYY-MM-DD hh:mm:ss"),
     },
     {
-      title: "Total Price Food",
-      key: "totalPriceFood",
-      render: (_, record) => record.totalPriceFood,
+      title: "Total Price",
+      key: "totalPrice",
+      render: (_, record) =>
+        formatCurrency(
+          record.totalPriceMovie + record.totalPriceFood - record.discount
+        ),
+    },
+    {
+      title: "Discount",
+      dataIndex: "discount",
+      render: (_, record) => (
+        <div>
+          <p>{formatCurrency(record.discount)}</p>
+        </div>
+      ),
     },
     {
       title: "Action",

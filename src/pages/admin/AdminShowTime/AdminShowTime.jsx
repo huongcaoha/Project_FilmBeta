@@ -132,9 +132,9 @@ export default function AdminShowTime() {
 
   const fetchTheater = async () => {
     try {
-      const response = await fetchAllTheater();
+      const response = await getListTheaters();
 
-      setTheaters(response.data.theaters);
+      setTheaters(response);
     } catch (error) {
       console.error(error);
     }
@@ -236,9 +236,6 @@ export default function AdminShowTime() {
 
   const checkFormValid = (e) => {
     const { name, value } = e.target;
-    console.log("Value: ", value);
-    console.log("name: ", name);
-
     const newShowTime = { ...showTime, [name]: value };
 
     setShowTime(newShowTime);

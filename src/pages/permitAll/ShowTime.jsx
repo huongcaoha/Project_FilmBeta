@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
-
+import "../../css/showTimeUser.css";
 export default function ShowTime() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [movies, setMovies] = useState([]);
@@ -144,7 +144,7 @@ export default function ShowTime() {
         {movies.map((movie) => (
           <div
             key={movie.id}
-            className="grid grid-cols-2 gap-10"
+            className="grid grid-cols-2 gap-10 item"
             style={{
               maxWidth: "600px",
               borderBottom: "2px solid blue",

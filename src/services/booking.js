@@ -25,12 +25,14 @@ export const getBookingSeatById = async (bookingId) => {
   return response.data;
 };
 
-export const handleBooking = async (showTimeId ,listSeatId,totalPriceFood ,foodBookingRequests) => {
+export const handleBooking = async (showTimeId ,listSeatId,totalPriceFood ,foodBookingRequests ,giftId ,discount ) => {
   const response = await baseUrl.post("/api.myService.com/v1/bookings",{
     showTimeId : showTimeId,
     listSeatId : listSeatId ,
     totalPriceFood : totalPriceFood,
-    foodBookingRequests : foodBookingRequests
+    foodBookingRequests : foodBookingRequests,
+    giftId : giftId,
+    discount : discount
   });
   return response.data ;
 }

@@ -20,6 +20,7 @@ import BookingTicket from "../pages/user/BookingTicket";
 import ComboFood from "../pages/admin/food/ComboFood";
 import Payment from "../pages/user/Payment";
 import GiftPage from "../pages/user/GiftPage";
+import AdminGift from "../pages/admin/AdminGift";
 
 const contentStyle = {
   padding: 50,
@@ -142,6 +143,14 @@ const protectedRouter = [
         element: (
           <LazyLoad>
             <ComboFood />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "gifts",
+        element: (
+          <LazyLoad>
+            <AdminGift />
           </LazyLoad>
         ),
       },
