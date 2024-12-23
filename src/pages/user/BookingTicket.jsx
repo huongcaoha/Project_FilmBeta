@@ -9,6 +9,7 @@ import moment from "moment";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 import { getListSeatSolds } from "../../services/seatService";
+import "../../css/bookingTicket.css";
 import {
   getMoneyBySeats,
   handleBooking,
@@ -184,8 +185,8 @@ export default function BookingTicket() {
 
   return (
     <div>
-      <div className="flex justify-between gap-[100px]  bg-[#f8f8f8] w-[100%] h-[100vh] pt-[50px] pl-[100px]">
-        <div className="text-center bg-black w-[50%] h-[80vh] relative">
+      <div className="content flex justify-between gap-[100px]  bg-[#f8f8f8] w-[100%] py-[5%] pt-[50px] pl-[100px]">
+        <div className="relative screen text-center bg-black lg:w-[50%]  h-[80vh] ">
           <p className=" w-[70%] h-[40px] m-auto flex justify-center items-center mt-3 text-2xl text-black bg-white  p-5">
             Projection Screen
           </p>
@@ -256,7 +257,7 @@ export default function BookingTicket() {
             </div>
           )}
           <div className="flex justify-between mt-10 ml-10">
-            <div className="flex justify-start gap-x-10 text-white  absolute bottom-0 w-[100%]">
+            <div className="lg:flex gap-y-3 justify-start gap-x-10 text-white  absolute bottom-0 w-[100%] flex-wrap">
               <div className="flex gap-4 items-center">
                 <div className="bg-red-600 w-10 h-10"></div>
                 <p className="font-bold">Chairs sold</p>
@@ -277,7 +278,7 @@ export default function BookingTicket() {
           </div>
         </div>
 
-        <div className="w-[50%] ">
+        <div className="lg:w-[50%]">
           <div className="bg-white w-[50%] ">
             <div className="row">
               <div className="col-lg-8 col-md-8 col-sm-8 col-xs-8">

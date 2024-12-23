@@ -282,23 +282,20 @@ export default function AdminTheater() {
   ];
   return (
     <div>
-      <h1 className="text-4xl font-bold">Theater Management</h1>
-      {isLoading ? <LoadingOutlined /> : <></>}
+      <div className="flex justify-between mb-4">
+        <h1 className="text-[32px] pb-6 font-medium">Theater Management</h1>
+        {isLoading ? <LoadingOutlined /> : <></>}
+        <Button type="primary" className=" p-4" onClick={handleOpenForm}>
+          Create Theater
+        </Button>
+      </div>
 
-      <div className="px-[150px] py-[50px]">
-        <div className="flex justify-end">
-          <Button
-            type="primary"
-            className=" w-[150px] h-[40px] text-lg"
-            onClick={handleOpenForm}
-          >
-            Create Theater
-          </Button>
-        </div>
+      <div>
+        <div className="flex justify-end"></div>
 
         <div>
           <form
-            className="flex gap-4 justify-end m-6"
+            className="flex gap-2 justify-end pb-4"
             onSubmit={handleOnsubmitSearch}
           >
             <Input

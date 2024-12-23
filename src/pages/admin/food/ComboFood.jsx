@@ -263,11 +263,11 @@ export default function ComboFood() {
 
   return (
     <div>
-      <h1 className="text-4xl font-bold">Combo Food Management</h1>
+      <h1 className="text-[32px] pb-6 font-medium">Combo Food Management</h1>
       {isLoading && <LoadingOutlined />}
 
-      <div className="px-[150px] py-[50px]">
-        <div className="flex justify-end pb-10">
+      <div>
+        <div className="flex justify-end pb-4">
           <Button
             type="primary"
             className="w-[200px] h-[40px] text-lg"

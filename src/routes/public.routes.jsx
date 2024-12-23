@@ -22,7 +22,7 @@ import Franchise from "../pages/user/Franchise";
 
 import Home from "../pages/permitAll/Home";
 import Demo from "../pages/Demo";
-import GiftPage from "../pages/user/GiftPage";
+import Banner from "../pages/user/Banner";
 
 const publicRouter = [
   {
@@ -30,8 +30,14 @@ const publicRouter = [
     element: <Home />,
     children: [
       {
-        index: true, // Đây là trang con mặc định khi vào "/"
-        element: <MoviesShowing />, // Hiển thị trang MoviesShowing
+        path: "", // Đây là trang con mặc định khi vào "/"
+        element: <Banner />,
+        children: [
+          {
+            path: "",
+            element: <MoviesShowing />,
+          },
+        ], // Hiển thị trang MoviesShowing
       },
       {
         path: "movies",
@@ -45,7 +51,6 @@ const publicRouter = [
             path: "showing", // Đường dẫn "/movies/showing"
             element: <MoviesShowing />,
           },
-
           {
             path: "coming_soon",
             element: <MoviesComingSoon />,

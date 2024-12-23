@@ -112,6 +112,7 @@ const AdminUserManager = () => {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
+      <h1 className="text-[32px] pb-6 font-medium">Combo Food Management</h1>
       <div className="flex justify-between mb-4">
         <Input.Search
           placeholder="Tìm kiếm người dùng..."

@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import baseUrl from "../../apis/instance"; // Sử dụng instance đã có
-import Cookies from "js-cookie";
+import { useCookies } from "react-cookie"; // Sửa import
 
 const LoginAdmin = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [cookies, setCookies] = useCookies(["data"]); // Sử dụng useCookies
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +21,6 @@ const LoginAdmin = () => {
     setLoading(true);
 
     try {
-      // Gọi API đăng nhập admin bằng instance đã tạo
       const response = await baseUrl.post(
         "/api.myService.com/v1/auth/sign-in",
         {
@@ -30,11 +30,9 @@ const LoginAdmin = () => {
       );
 
       // Lưu token vào Cookie
-      Cookies.set("adminData", JSON.stringify(response.data), { path: "/" });
-      console.log("Đăng nhập Admin thành công:", response.data);
+      setCookies("data", JSON.stringify(response.data), { path: "/" }); // Sử dụng setCookies
 
       // Kiểm tra quyền ADMIN
-      console.log(response.data.roles.some((e) => e.roleName === "ADMIN"));
       if (response.data.roles.some((e) => e.roleName === "ADMIN")) {
         navigate("/admin");
       } else {
@@ -42,7 +40,7 @@ const LoginAdmin = () => {
       }
     } catch (err) {
       console.error("Lỗi đăng nhập Admin:", err);
-      if (err.response) {
+      if (err.response && err.response.data) {
         setError(err.response.data.message || "Đăng nhập thất bại!");
       } else {
         setError("Không thể kết nối đến máy chủ. Vui lòng thử lại sau.");
@@ -82,7 +80,6 @@ const LoginAdmin = () => {
               required
             />
           </div>
-
           <div>
             <label
               htmlFor="password"
@@ -101,7 +98,6 @@ const LoginAdmin = () => {
               required
             />
           </div>
-
           <button
             type="submit"
             className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
@@ -113,4 +109,5 @@ const LoginAdmin = () => {
     </div>
   );
 };
+
 export default LoginAdmin;

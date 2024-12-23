@@ -86,7 +86,7 @@ const items = [
     icon: <MessageOutlined style={{ fontSize: "20px" }} />,
     label: (
       <Link to={"/admin/comment"} className="text-base font-semibold mb-5">
-        Comment Management
+        Comment
       </Link>
     ),
   },
@@ -95,7 +95,7 @@ const items = [
     icon: <UserSwitchOutlined style={{ fontSize: "20px" }} />,
     label: (
       <Link to={"/admin/users"} className="text-base font-semibold mb-5">
-        User Management
+        User
       </Link>
     ),
   },
@@ -104,7 +104,7 @@ const items = [
     icon: <PictureOutlined style={{ fontSize: "20px" }} />,
     label: (
       <Link to={"/admin/banners"} className="text-base font-semibold mb-5">
-        Banner Management
+        Banner
       </Link>
     ),
   },
@@ -178,14 +178,11 @@ export default function SideBar() {
   };
   return (
     <Menu
-      className="sidebar h-[100vh] pt-[50px] bg-[#f5f5f5]"
+      className=" h-[100vh] pt-[50px] bg-[#f5f5f5] w-[240px]"
       mode="inline"
       defaultSelectedKeys={["231"]}
       openKeys={stateOpenKeys}
       onOpenChange={onOpenChange}
-      style={{
-        width: 256,
-      }}
       items={items}
     />
   );

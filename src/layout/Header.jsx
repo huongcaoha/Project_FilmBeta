@@ -9,6 +9,7 @@ import SelectTheater from "./SelectTheater";
 
 import "../css/headerUser.css";
 import { logoutUser } from "../services/logout";
+import MenuHeader from "./MenuHeader";
 
 export default function Header() {
   const [currentLink, setCurrentLink] = useState("movies");
@@ -18,7 +19,6 @@ export default function Header() {
 
   const calllogout = async () => {
     const response = await logoutUser();
-    console.log(response);
   };
 
   const handleLogout = async () => {
@@ -29,15 +29,10 @@ export default function Header() {
     navigate("/login");
   };
 
-  // useEffect(() => {
-  //   getUserLogin();
-  // }, []);
-
   const fetchUser = async () => {
     try {
       const response = await getUserLogin();
       setUserLogin(response);
-      setIsLoggedIn(true);
     } catch (error) {}
   };
 
@@ -106,7 +101,7 @@ export default function Header() {
           </div>
 
           {/* Các mục điều hướng */}
-          <div className="header flex gap-8 font-medium font-[Oswald] text-[18px] text-[rgb(51,51,51)]">
+          <div className="header lg:flex gap-8 font-medium font-[Oswald] text-[18px] text-[rgb(51,51,51)] sm:hidden md:hidden">
             {" "}
             <div>
               <NavLink
@@ -172,8 +167,11 @@ export default function Header() {
               </NavLink>
             </div>
             <div>
-              <NavLink>THÀNH VIÊN</NavLink>
+              <NavLink to={"*"}>THÀNH VIÊN</NavLink>
             </div>
+          </div>
+          <div className="lg:hidden md:block sm:block">
+            <MenuHeader></MenuHeader>
           </div>
         </div>
       </div>

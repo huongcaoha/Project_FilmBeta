@@ -7,24 +7,21 @@ import HeaderAdmin from "../../layout/HeaderAdmin";
 import Cookies from "js-cookie";
 
 export default function Admin() {
-  // bảo vệ router
-  // const isAdmin = () => {
-  //   const data = JSON.parse(Cookies.get("adminData") || "null");
-  //   if (data) {
-  //     if (data.roles.some((e) => e.roleName === "ADMIN")) {
-  //       return true;
-  //     }
-  //     return false;
-  //   } else {
-  //     return false;
-  //   }
-  // };
+  //bảo vệ router
+  const isAdmin = () => {
+    const data = JSON.parse(Cookies.get("data") || "null");
+    if (data) {
+      if (data.roles.some((e) => e.roleName === "ADMIN")) {
+        return true;
+      }
+      return false;
+    } else {
+      return false;
+    }
+  };
 
   // Kiểm tra xem đã có token và role admin??
   // return isAdmin ? (
-  const isAdmin = () => {
-    return true;
-  };
   return (
     <>
       <HeaderAdmin />

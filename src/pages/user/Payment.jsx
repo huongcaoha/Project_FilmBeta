@@ -219,7 +219,7 @@ export default function Payment() {
 
   return (
     <div className="bg-[#f8f8f8] m-auto">
-      <div className="p-4 w-[40%] m-auto bg-[#f0f0f0]">
+      <div className="p-4 lg:w-[40%] m-auto bg-[#f0f0f0] sm:w-full">
         <div className="flex items-center mb-4">
           <h2 className="text-lg font-bold">THÔNG TIN THANH TOÁN</h2>
         </div>
@@ -286,7 +286,7 @@ export default function Payment() {
           >
             <Option value={0}>Chọn quà tặng</Option>
             {userGifts.map((gift) => (
-              <Option value={gift.id}>
+              <Option value={gift.gift.id}>
                 <div className="flex justify-between items-center px-[50px]">
                   <img className="w-12 h-12" src={gift.gift.image} alt="" />
                   <p>{gift.gift.giftName}</p>

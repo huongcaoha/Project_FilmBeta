@@ -88,14 +88,14 @@ export default function GiftPage() {
             />
           )}
         </div>
-        <div className="absolute top-[40px] left-[50px]">
+        <div className="absolute top-[5%] left-[50px]">
           <img
             className="bg-[white] rounded-2xl"
             src="https://www.betacinemas.vn/Assets/Common/logo/logo.png"
             alt=""
           />
         </div>
-        <div className=" absolute right-[150px] top-[20px] text-[yellow] flex flex-col gap-y-5">
+        <div className=" absolute right-[6%] top-[2%] text-[yellow] flex flex-col gap-y-5">
           <div className="flex justify-center items-center gap-3">
             <img
               className="w-12 h-12 rounded-full"

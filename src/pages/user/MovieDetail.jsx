@@ -349,14 +349,13 @@ export default function MovieDetail() {
         style={{ backgroundColor: "rgba(255, 255, 255, 0.5)" }} // Background trong suốt
       >
         <div style={{ backdropFilter: "blur(10px)", padding: "20px" }}>
-          <h2 className="text-2xl font-semibold mb-5">Thông tin lịch chiếu</h2>
+          <h2 className="text-2xl font-semibold mb-4">Thông tin lịch chiếu</h2>
           <div className="text-xl">
             <div className="flex justify-center items-center">
               <img
                 style={{
                   borderRadius: "10px",
-                  width: "400px",
-                  height: "563px",
+                  width: "240px",
                 }}
                 src={showTimeDetail?.movie.poster}
                 alt=""

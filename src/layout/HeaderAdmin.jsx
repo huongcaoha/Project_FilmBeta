@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Cookies from "js-cookie";
 import { logout } from "../redux/slices/userSlice";
 import { logoutAdmin, logoutUser } from "../services/logout";
+import { Button } from "antd";
 
 export default function HeaderAdmin() {
   const { currentUser } = useSelector((state) => state.user); // Lấy thông tin admin từ Redux
@@ -40,12 +41,10 @@ export default function HeaderAdmin() {
           {/* Xin chào: {currentUser.username} */}
         </li>
         <li>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-          >
-            Đăng xuất
-          </button>
+          <div>|</div>
+        </li>
+        <li>
+          <div onClick={handleLogout}>Đăng xuất</div>
         </li>
       </ul>
     </div>

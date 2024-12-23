@@ -24,6 +24,13 @@ export default function TicketPrice() {
     getCities();
   }, []);
 
+  // Theo dõi sự thay đổi của cookie và cập nhật state
+  useEffect(() => {
+    if (cookies.currentTheater) {
+      setCurrentTheater(cookies.currentTheater);
+    }
+  }, [cookies.currentTheater]);
+
   const handleMenuClick = (theater) => {
     setCurrentTheater(theater);
     setCookie("currentTheater", theater, { path: "/" }); // Lưu cookie

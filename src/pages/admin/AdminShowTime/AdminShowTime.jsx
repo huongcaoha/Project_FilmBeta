@@ -432,21 +432,18 @@ export default function AdminShowTime() {
   ];
   return (
     <div>
-      <h1 className="text-4xl font-bold">Show Time Management</h1>
-      {isLoading ? <LoadingOutlined /> : <></>}
+      <div className="flex justify-between mb-4">
+        <h1 className="text-[32px] pb-6 font-medium">Show Time Management</h1>
+        {isLoading ? <LoadingOutlined /> : <></>}
+        <Button type="primary" className=" p-4" onClick={handleOpenForm}>
+          Create Show Time
+        </Button>
+      </div>
 
-      <div className="px-[150px] py-[50px]">
-        <div className="flex justify-end">
-          <Button
-            type="primary"
-            className=" w-[200px] h-[40px] text-lg"
-            onClick={handleOpenForm}
-          >
-            Create Show Time
-          </Button>
-        </div>
+      <div className="px-4">
+        <div className="flex justify-end"></div>
 
-        <div className="m-10 flex justify-end">
+        <div className=" flex gap-4 pb-4">
           <Select
             value={search.movieId}
             style={{ width: 200 }}

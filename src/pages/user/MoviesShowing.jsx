@@ -4,6 +4,9 @@ import { fetchAllMoviesIsShowing } from "../../services/movieService";
 import { Button } from "antd";
 import { NavLink } from "react-router-dom";
 import StatusMovie from "./StatusMovie";
+
+import Banner from "./Banner";
+
 import { isUserLogin } from "../../utils/auth";
 
 export default function MoviesShowing() {
@@ -29,6 +32,7 @@ export default function MoviesShowing() {
   };
   return (
     <div>
+      {/* <Banner /> */}
       <StatusMovie />
       <div className="py-6 px-[24px] md:px-[60px] lg:px-[160px]">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 p-4">

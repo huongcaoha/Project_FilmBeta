@@ -98,7 +98,7 @@ export default function ShowTime() {
   return (
     <div className="bg-[#f8f8f8] w-full min-h-[100vh] border border-black ">
       <div className="p-10 flex justify-center">
-        <ul className="flex gap-10">
+        <ul className="lg:flex gap-10 md:flex flexWrap  sm:flex flexWrap">
           {weeks.map((d, index) => (
             <li
               key={index}
@@ -144,7 +144,7 @@ export default function ShowTime() {
         {movies.map((movie) => (
           <div
             key={movie.id}
-            className="grid grid-cols-2 gap-10 item"
+            className="lg:grid grid-cols-2 gap-10 item sm:flex md:flex"
             style={{
               maxWidth: "600px",
               borderBottom: "2px solid blue",
@@ -230,11 +230,7 @@ export default function ShowTime() {
             <div className="text-xl">
               <div className="flex justify-center items-center">
                 <img
-                  style={{
-                    borderRadius: "10px",
-                    width: "400px",
-                    height: "563px",
-                  }}
+                  className="w-[240px]"
                   src={showTimeDetail?.movie.poster}
                   alt=""
                 />

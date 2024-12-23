@@ -1,0 +1,18 @@
+@media (max-width: 1024px) {
+   .content {
+    display: flex ;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+   
+    height: auto;
+   }
+   .screen {
+   margin-right: 10%;
+    width: 100%;
+}
+}
+
+@media (max-width: 768px) {
+
+}

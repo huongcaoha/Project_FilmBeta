@@ -208,7 +208,7 @@ export default function DashBoard() {
 
   return (
     <div>
-      <p className="text-[32px] pb-6">DashBoard</p>
+      <p className="text-[32px] pb-6 font-medium">DashBoard</p>
 
       {/* Phần thống kê newUsers,total... */}
       <div className="flex justify-between gap-2 text-white pb-6">

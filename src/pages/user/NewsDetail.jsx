@@ -38,7 +38,7 @@ export default function NewsDetail() {
 
   return (
     <>
-      <div className="flex justify-between gap-6 bg-[rgb(248,248,248)] px-[200px] pt-[140px] pb-6">
+      <div className="flex justify-between gap-6 bg-[rgb(248,248,248)] px-[200px] pt-6 pb-6">
         {/* Phần nội dung news */}
         <div className="flex-1">
           <p className="text-[28px] font-light mb-6 font-[Oswald]">

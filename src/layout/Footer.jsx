@@ -3,7 +3,7 @@ import React from "react";
 const Footer = () => {
   return (
     <footer className="bg-gray-100 py-8">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-[160px]">
         {/* Grid responsive */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-8">
           {/* Cột 1: Logo và các liên kết */}
